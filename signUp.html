@@ -69,7 +69,11 @@
 <body>
     <div class="signup-container">
         <h1>Sign Up</h1>
-        <form id="signupForm">
+        <form id="signupForm" method="POST" action="https://testingmultitenantstack.b2clogin.com/testingmultitenantstack.onmicrosoft.com/B2C_1_SignUpWithInvitation">
+            <!-- Hidden fields for Azure AD B2C parameters -->
+            <input type="hidden" name="csrf_token" value="">
+            <input type="hidden" name="tx" value="">
+
             <div class="form-group">
                 <label for="email">Email</label>
                 <input type="email" id="email" name="email" placeholder="Enter your email" required>
@@ -104,24 +108,28 @@
             return params;
         }
 
+        // Populate hidden fields with Azure AD B2C parameters
+        function populateHiddenFields() {
+            const params = getQueryParams();
+            document.querySelector('input[name="csrf_token"]').value = params.csrf_token || '';
+            document.querySelector('input[name="tx"]').value = params.tx || '';
+        }
+
         // Prefill the tenantName and roles fields
         function prefillFields() {
             const params = getQueryParams();
-            const tenantName = params.tenantName || "";
-            const roles = params.roles || "";
+            const tenantName = params.tenantName || '';
+            const roles = params.roles || '';
 
-            document.getElementById("tenantName").value = tenantName;
-            document.getElementById("roles").value = roles;
+            document.getElementById('tenantName').value = tenantName;
+            document.getElementById('roles').value = roles;
         }
 
-        // Handle form submission
+        // Handle form submission (basic validation)
         document.getElementById("signupForm").addEventListener("submit", function (event) {
-            event.preventDefault();
-
             const email = document.getElementById("email").value.trim();
             const password = document.getElementById("password").value.trim();
 
-            // Basic validation
             let hasError = false;
 
             if (!email) {
@@ -141,19 +149,13 @@
                 document.getElementById("passwordError").textContent = "";
             }
 
-            if (!hasError) {
-                // Submit the form data (you can send it to a backend API here)
-                alert("Sign-Up Successful!");
-                console.log({
-                    email: email,
-                    password: password,
-                    tenantName: document.getElementById("tenantName").value,
-                    roles: document.getElementById("roles").value
-                });
+            if (hasError) {
+                event.preventDefault(); // Prevent submission if validation fails
             }
         });
 
         // Initialize the form
+        populateHiddenFields();
         prefillFields();
     </script>
 </body>
