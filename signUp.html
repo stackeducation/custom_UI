@@ -65,38 +65,10 @@
             background-color: #005a9e;
         }
     </style>
-</head>
-<body>
-    <div class="signup-container">
-        <h1>Sign Up</h1>
-        <form id="signupForm" method="POST" action="https://testingmultitenantstack.b2clogin.com/testingmultitenantstack.onmicrosoft.com/B2C_1_SignUpWithInvitation">
-            <!-- Hidden fields for Azure AD B2C parameters -->
-            <input type="hidden" name="csrf_token" value="">
-            <input type="hidden" name="tx" value="">
-
-            <div class="form-group">
-                <label for="email">Email</label>
-                <input type="email" id="email" name="email" placeholder="Enter your email" required>
-                <div class="error" id="emailError"></div>
-            </div>
-            <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" id="password" name="password" placeholder="Create a password" required>
-                <div class="error" id="passwordError"></div>
-            </div>
-            <div class="form-group">
-                <label for="tenantName">Tenant Name</label>
-                <input type="text" id="tenantName" name="tenantName" readonly>
-            </div>
-            <div class="form-group">
-                <label for="userRoles">Roles</label>
-                <input type="text" id="userRoles" name="userRoles" readonly>
-            </div>
-            <button type="submit" class="submit-btn">Sign Up</button>
-        </form>
-    </div>
-
     <script>
+        var label = document.createElement('label');
+         label.appendChild(document.createTextNode('Welcome to the Login page @')); 
+         document.body.appendChild(label);
         function getQueryParams() {
   const params = {};
   const queryString = window.location.search;
@@ -153,9 +125,38 @@ document.getElementById("signupForm").addEventListener("submit", function (event
   }
 });
 
-debugger;
 populateHiddenFields();
 prefillFields();
     </script>
+</head>
+<body>
+    <div class="signup-container">
+        <h1>Sign Up</h1>
+        <form id="signupForm" method="POST" action="https://testingmultitenantstack.b2clogin.com/testingmultitenantstack.onmicrosoft.com/B2C_1_SignUpWithInvitation">
+            <!-- Hidden fields for Azure AD B2C parameters -->
+            <input type="hidden" name="csrf_token" value="">
+            <input type="hidden" name="tx" value="">
+
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" placeholder="Enter your email" required>
+                <div class="error" id="emailError"></div>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" placeholder="Create a password" required>
+                <div class="error" id="passwordError"></div>
+            </div>
+            <div class="form-group">
+                <label for="tenantName">Tenant Name</label>
+                <input type="text" id="tenantName" name="tenantName" readonly>
+            </div>
+            <div class="form-group">
+                <label for="userRoles">Roles</label>
+                <input type="text" id="userRoles" name="userRoles" readonly>
+            </div>
+            <button type="submit" class="submit-btn">Sign Up</button>
+        </form>
+    </div>
 </body>
 </html>
