@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign Up</title>
     <style>
-        body {
+/*         body {
             font-family: Arial, sans-serif;
             background-color: #f4f4f4;
             margin: 0;
@@ -63,79 +63,79 @@
         }
         .submit-btn:hover {
             background-color: #005a9e;
-        }
+        } */
     </style>
     <script>
         var label = document.createElement('label');
          label.appendChild(document.createTextNode('Welcome to the Login page @')); 
          document.body.appendChild(label);
-        function getQueryParams() {
-  const params = {};
-  const queryString = window.location.search;
-  const urlParams = new URLSearchParams(queryString);
-  for (const [key, value] of urlParams) {
-      params[key] = value;
-  }
-  return params;
-}
+//         function getQueryParams() {
+//   const params = {};
+//   const queryString = window.location.search;
+//   const urlParams = new URLSearchParams(queryString);
+//   for (const [key, value] of urlParams) {
+//       params[key] = value;
+//   }
+//   return params;
+// }
 
-// Populate hidden fields with Azure AD B2C parameters
-function populateHiddenFields() {
-  const params = getQueryParams();
-  document.querySelector('input[name="csrf_token"]').value = params.csrf_token || '';
-  document.querySelector('input[name="tx"]').value = params.tx || '';
-}
+// // Populate hidden fields with Azure AD B2C parameters
+// function populateHiddenFields() {
+//   const params = getQueryParams();
+//   document.querySelector('input[name="csrf_token"]').value = params.csrf_token || '';
+//   document.querySelector('input[name="tx"]').value = params.tx || '';
+// }
 
-// Prefill the tenantName and roles fields
-function prefillFields() {
-  const params = getQueryParams();
-  const tenantName = params.tenantName || '';
-  const roles = params.roles || '';
+// // Prefill the tenantName and roles fields
+// function prefillFields() {
+//   const params = getQueryParams();
+//   const tenantName = params.tenantName || '';
+//   const roles = params.roles || '';
 
-  document.getElementById('tenantName').value = tenantName;
-  document.getElementById('userRoles').value = roles;
-}
+//   document.getElementById('tenantName').value = tenantName;
+//   document.getElementById('userRoles').value = roles;
+// }
 
-// Handle form submission (basic validation)
-document.getElementById("signupForm").addEventListener("submit", function (event) {
-  const email = document.getElementById("email").value.trim();
-  const password = document.getElementById("password").value.trim();
+// // Handle form submission (basic validation)
+// document.getElementById("signupForm").addEventListener("submit", function (event) {
+//   const email = document.getElementById("email").value.trim();
+//   const password = document.getElementById("password").value.trim();
 
-  let hasError = false;
+//   let hasError = false;
 
-  if (!email) {
-      document.getElementById("emailError").textContent = "Email is required.";
-      hasError = true;
-  } else {
-      document.getElementById("emailError").textContent = "";
-  }
+//   if (!email) {
+//       document.getElementById("emailError").textContent = "Email is required.";
+//       hasError = true;
+//   } else {
+//       document.getElementById("emailError").textContent = "";
+//   }
 
-  if (!password) {
-      document.getElementById("passwordError").textContent = "Password is required.";
-      hasError = true;
-  } else if (password.length < 6) {
-      document.getElementById("passwordError").textContent = "Password must be at least 6 characters.";
-      hasError = true;
-  } else {
-      document.getElementById("passwordError").textContent = "";
-  }
+//   if (!password) {
+//       document.getElementById("passwordError").textContent = "Password is required.";
+//       hasError = true;
+//   } else if (password.length < 6) {
+//       document.getElementById("passwordError").textContent = "Password must be at least 6 characters.";
+//       hasError = true;
+//   } else {
+//       document.getElementById("passwordError").textContent = "";
+//   }
 
-  if (hasError) {
-      event.preventDefault(); // Prevent submission if validation fails
-  }
-});
+//   if (hasError) {
+//       event.preventDefault(); // Prevent submission if validation fails
+//   }
+// });
 
-populateHiddenFields();
-prefillFields();
+// populateHiddenFields();
+// prefillFields();
     </script>
 </head>
 <body>
     <div id="api">
-    <div class="signup-container">
-        <h1>Sign Up</h1>
-        <form id="signupForm" method="POST" action="https://testingmultitenantstack.b2clogin.com/testingmultitenantstack.onmicrosoft.com/B2C_1_SignUpWithInvitation">
+<!--     <div class="signup-container">
+        <h1>Sign Up</h1> -->
+<!--         <form id="signupForm" method="POST" action="https://testingmultitenantstack.b2clogin.com/testingmultitenantstack.onmicrosoft.com/B2C_1_SignUpWithInvitation"> -->
             <!-- Hidden fields for Azure AD B2C parameters -->
-            <input type="hidden" name="csrf_token" value="">
+<!--             <input type="hidden" name="csrf_token" value="">
             <input type="hidden" name="tx" value="">
 
             <div class="form-group">
@@ -157,8 +157,8 @@ prefillFields();
                 <input type="text" id="userRoles" name="userRoles" readonly>
             </div>
             <button type="submit" class="submit-btn">Sign Up</button>
-        </form>
-    </div>
+        </form> -->
+<!--     </div> -->
         </div>
 </body>
 </html>
