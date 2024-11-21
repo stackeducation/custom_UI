@@ -90,7 +90,7 @@
             </div>
             <div class="form-group">
                 <label for="roles">Roles</label>
-                <input type="text" id="roles" name="roles" readonly>
+                <input type="text" id="userRoles" name="userRoles" readonly>
             </div>
             <button type="submit" class="submit-btn">Sign Up</button>
         </form>
@@ -122,7 +122,7 @@
             const roles = params.roles || '';
 
             document.getElementById('tenantName').value = tenantName;
-            document.getElementById('roles').value = roles;
+            document.getElementById('userRoles').value = roles;
         }
 
         // Handle form submission (basic validation)
