@@ -54,6 +54,6 @@ document.getElementById("signupForm").addEventListener("submit", function (event
   }
 });
 
-// Initialize the form
+debugger;
 populateHiddenFields();
 prefillFields();
