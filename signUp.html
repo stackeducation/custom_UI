@@ -1,167 +1,23 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign Up</title>
-    <style>
-        .extension_tenantName_li, .extension_userRole_li {
-            display: none;
-        }
-/*         body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
-        .signup-container {
-            background: white;
-            padding: 20px 30px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            width: 400px;
-        }
-        .signup-container h1 {
-            margin: 0 0 20px 0;
-            font-size: 24px;
-            color: #333;
-        }
-        .form-group {
-            margin-bottom: 15px;
-        }
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-            color: #555;
-        }
-        .form-group input {
-            width: 100%;
-            padding: 8px;
-            font-size: 16px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-        .form-group input:focus {
-            outline: none;
-            border-color: #0078d4;
-        }
-        .form-group .error {
-            color: red;
-            font-size: 12px;
-            margin-top: 5px;
-        }
-        .submit-btn {
-            width: 100%;
-            padding: 10px 15px;
-            font-size: 16px;
-            color: white;
-            background-color: #0078d4;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        .submit-btn:hover {
-            background-color: #005a9e;
-        } */
-    </style>
     <script>
-        var label = document.createElement('label');
-         label.appendChild(document.createTextNode('Welcome to the Login page @')); 
-         document.body.appendChild(label);
-//         function getQueryParams() {
-//   const params = {};
-//   const queryString = window.location.search;
-//   const urlParams = new URLSearchParams(queryString);
-//   for (const [key, value] of urlParams) {
-//       params[key] = value;
-//   }
-//   return params;
-// }
+         const tenantName = document.getElementsByClassName('extension_tenantName_li');
+         const userRole = document.getElementsByClassName('extension_userRole_li');
+         if (tenantName[0]) {
+                tenantName[0].style.display = 'none';
+            }
 
-// // Populate hidden fields with Azure AD B2C parameters
-// function populateHiddenFields() {
-//   const params = getQueryParams();
-//   document.querySelector('input[name="csrf_token"]').value = params.csrf_token || '';
-//   document.querySelector('input[name="tx"]').value = params.tx || '';
-// }
-
-// // Prefill the tenantName and roles fields
-// function prefillFields() {
-//   const params = getQueryParams();
-//   const tenantName = params.tenantName || '';
-//   const roles = params.roles || '';
-
-//   document.getElementById('tenantName').value = tenantName;
-//   document.getElementById('userRoles').value = roles;
-// }
-
-// // Handle form submission (basic validation)
-// document.getElementById("signupForm").addEventListener("submit", function (event) {
-//   const email = document.getElementById("email").value.trim();
-//   const password = document.getElementById("password").value.trim();
-
-//   let hasError = false;
-
-//   if (!email) {
-//       document.getElementById("emailError").textContent = "Email is required.";
-//       hasError = true;
-//   } else {
-//       document.getElementById("emailError").textContent = "";
-//   }
-
-//   if (!password) {
-//       document.getElementById("passwordError").textContent = "Password is required.";
-//       hasError = true;
-//   } else if (password.length < 6) {
-//       document.getElementById("passwordError").textContent = "Password must be at least 6 characters.";
-//       hasError = true;
-//   } else {
-//       document.getElementById("passwordError").textContent = "";
-//   }
-
-//   if (hasError) {
-//       event.preventDefault(); // Prevent submission if validation fails
-//   }
-// });
-
-// populateHiddenFields();
-// prefillFields();
+            if (userRole[0]) {
+                userRole[0].style.display = 'none';
+            }
     </script>
 </head>
 <body>
-    <div id="api">
-<!--     <div class="signup-container">
-        <h1>Sign Up</h1> -->
-<!--         <form id="signupForm" method="POST" action="https://testingmultitenantstack.b2clogin.com/testingmultitenantstack.onmicrosoft.com/B2C_1_SignUpWithInvitation"> -->
-            <!-- Hidden fields for Azure AD B2C parameters -->
-<!--             <input type="hidden" name="csrf_token" value="">
-            <input type="hidden" name="tx" value="">
-
-            <div class="form-group">
-                <label for="email">Email</label>
-                <input type="email" id="email" name="email" placeholder="Enter your email" required>
-                <div class="error" id="emailError"></div>
-            </div>
-            <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" id="password" name="password" placeholder="Create a password" required>
-                <div class="error" id="passwordError"></div>
-            </div>
-            <div class="form-group">
-                <label for="tenantName">Tenant Name</label>
-                <input type="text" id="tenantName" name="tenantName" readonly>
-            </div>
-            <div class="form-group">
-                <label for="userRoles">Roles</label>
-                <input type="text" id="userRoles" name="userRoles" readonly>
-            </div>
-            <button type="submit" class="submit-btn">Sign Up</button>
-        </form> -->
-<!--     </div> -->
-        </div>
+    <div id="api"></div>
 </body>
 </html>
