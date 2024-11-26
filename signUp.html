@@ -22,7 +22,7 @@ div[data-tenant-branding-background-color=true] {
     height: 100%;
     background-color: #296ec6;
     position: fixed;
-    z-index: 0;
+    z-index: -1;
 }
 
 .container {
@@ -47,10 +47,6 @@ div[data-tenant-branding-background-color=true] {
     display: inline-block;
     vertical-align: top;
     padding: 0;
-}
-
-ul {
-    list-style: none;
 }
 
 .self_asserted_container .row .panel-default {
@@ -120,6 +116,44 @@ h1 {
     text-align: left;
 }
 
+#attributeVerification #attributeList ul {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+#attributeList ul {
+    padding: 0;
+}
+
+#attributeList ul li {
+    list-style: none;
+    margin: 1rem 0;
+}
+
+#attributeList ul li label {
+    display: block;
+    text-align: left;
+    float: none;
+}
+
+span.required {
+    position: absolute;
+    right: 6%;
+    font-size: 1.4em;
+    color: red;
+    margin-top: .5em;
+}
+
+#attributeList ul li .helpLink {
+    display: none;
+}
+
+a {
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+}
+
 .buttons button:not([aria-disabled=true]) {
     opacity: 1;
 }
@@ -150,6 +184,10 @@ h1 {
     margin-bottom: 5px;
 }
 
+#attributeList ul li .attrEntry .itemLevel {
+    display: none;
+}
+        
 #attributeVerification .buttons {
     margin-top: 30px;
 }
