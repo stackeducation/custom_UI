@@ -261,6 +261,14 @@
             margin-top: 10px;
         }
     </style>
+    <script defer>
+setTimeout(() => { 
+ const signUpButton = document.getElementById('continue');
+    if (signUpButton) {
+        signUpButton.textContent = 'Sign Up'; 
+    }
+}, 2000); 
+</script>
 </head>
 <body>
     <div id="background_branding_container" data-tenant-branding-background-color="true"></div>
@@ -301,13 +309,5 @@
             </div>
         </div>
     </div>
-    <script>
-setTimeout(() => { 
- const signUpButton = document.getElementById('continue');
-    if (signUpButton) {
-        signUpButton.textContent = 'Sign Up'; 
-    }
-}, 2000); 
-</script>
 </body>
 </html>
