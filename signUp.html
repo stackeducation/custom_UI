@@ -262,12 +262,15 @@
         }
     </style>
     <script defer>
-setTimeout(() => { 
- const signUpButton = document.getElementById('continue');
+$(document).ready(function() {
+
+    const signUpButton = document.getElementById('continue');
     if (signUpButton) {
         signUpButton.textContent = 'Sign Up'; 
     }
-}, 100); 
+
+    $('.heading h1').html("Welcome to Stack");
+});
 </script>
 </head>
 <body>
