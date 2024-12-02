@@ -262,15 +262,16 @@
         }
     </style>
     <script defer>
-$(document).ready(function() {
 
-    const signUpButton = document.getElementById('continue');
-    if (signUpButton) {
-        signUpButton.textContent = 'Sign Up'; 
-    }
+    document.addEventListener('DOMContentLoaded', function() {
 
-    $('.heading h1').html("Welcome to Stack");
-});
+        const signUpButton = document.getElementById('continue');
+        if (signUpButton) {
+            signUpButton.textContent = 'Sign Up'; 
+        }
+
+        document.querySelector('.heading h1').textContent = "Create Account";
+    });
 </script>
 </head>
 <body>
