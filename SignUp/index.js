@@ -1,3 +1,4 @@
+console.log("Rendered!");
 function getQueryParams() {
   const params = {};
   const queryString = window.location.search;
