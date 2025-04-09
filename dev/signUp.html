@@ -73,16 +73,30 @@
         }
         
         .self_asserted_container .row .panel-default .panel-body {
-            margin: 0 auto;
-            max-width: 380px;
-            width: auto;
+            /* margin: 0 auto; */
+            /* max-width: 380px; */
+            /* width: auto; */
+            display: flex;
+           justify-content: space-between;
             padding: 0;
         }
+
+        /* .self_asserted_container .row .panel-default .panel-body .branding-wrapper {
+           display: flex;
+           justify-content: space-around;
+        } */
         
-        .self_asserted_container .row .panel-default .panel-body img.companyLogo {
-            display: block;
-            margin: auto;
-            height: 60px;
+        .self_asserted_container .row .panel-default .panel-body .branding-wrapper img.companyLogo {
+            /* display: block; */
+            /* margin: auto; */
+            height: 48px;
+        }
+
+        .self_asserted_container .row .panel-default .panel-body img.landingImage {
+            /* display: block; */
+            /* margin: auto; */
+            width:200px;
+            /* height: 500px; */
         }
         
         #api {
@@ -278,8 +292,13 @@ setTimeout(() => {
             <div class="col-lg-6">
                 <div class="panel panel-default">
                     <div class="panel-body">
-                        <img class="companyLogo" data-tenant-branding-logo="true" src="stack-logo.svg" alt="Company Logo">
-                        <div id="api" data-name="SelfAsserted" role="main"></div>
+                        <div class="branding-wrapper">
+                            <img class="companyLogo" data-tenant-branding-logo="true" src="stack-logo.svg" width="160" alt="Company Logo">
+                            <div id="api" data-name="SelfAsserted" role="main"></div>
+                        </div>
+                        <div>
+                            <img class="landingImage" src="landing-image.svg" alt="Landing Image">
+                        </div>
                     </div>
                 </div>
             </div>
