@@ -4,10 +4,36 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign In</title>
+    <style>
+        body {
+            box-sizing: border-box;
+            /* margin: 0; */
+            /* padding: 0; */
+            font-family: Segoe UI, SegoeUI, "Helvetica Neue", Helvetica, Arial, sans-serif;
+            font-size: 14px;
+            line-height: 1.42857143;
+            color: #333;
+        }
+        .wrapper {
+            display: flex;
+            justify-content: space-between;
+            width: 70%;
+            margin: 0 auto;
+        }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <div id="api"></div>
+    <div class="container self_asserted_container role="presentation">
+        <div class="wrapper">
+            <div>
+                <img class="companyLogo" data-tenant-branding-logo="true" src="https://stackeducation.github.io/custom_UI/dev/stack-logo.svg" width="160" height="48px" alt="Company Logo">
+                <h2>Login</h2>
+                <div id="api" data-name="SelfAsserted" role="main"></div>
+            </div>
+            <div>
+                <img class="landingImage" src="https://stackeducation.github.io/custom_UI/dev/landing-image.svg" width="600" alt="Landing Image">
+            </div>
+        </div>
     </div>
 </body>
 </html>
