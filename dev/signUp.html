@@ -44,7 +44,8 @@
         }
         
         .col-lg-6 {
-            max-width: 470px;
+            /* max-width: 470px; */
+            max-width: 80%;
             width: 100%;
             float: none;
             display: inline-block;
@@ -75,9 +76,9 @@
         .self_asserted_container .row .panel-default .panel-body {
             /* margin: 0 auto; */
             /* max-width: 380px; */
-            /* width: auto; */
+            width: auto;
             display: flex;
-           justify-content: space-between;
+            justify-content: space-between;
             padding: 0;
         }
 
@@ -85,19 +86,6 @@
            display: flex;
            justify-content: space-around;
         } */
-        
-        .self_asserted_container .row .panel-default .panel-body .branding-wrapper img.companyLogo {
-            /* display: block; */
-            /* margin: auto; */
-            height: 48px;
-        }
-
-        .self_asserted_container .row .panel-default .panel-body img.landingImage {
-            /* display: block; */
-            /* margin: auto; */
-            width:200px;
-            /* height: 500px; */
-        }
         
         #api {
             margin: 0 auto;
@@ -293,11 +281,11 @@ setTimeout(() => {
                 <div class="panel panel-default">
                     <div class="panel-body">
                         <div class="branding-wrapper">
-                            <img class="companyLogo" data-tenant-branding-logo="true" src="./stack-logo.svg" width="160" alt="Company Logo">
+                            <img class="companyLogo" data-tenant-branding-logo="true" src="https://stackeducation.github.io/custom_UI/dev/stack-logo.svg" width="160" height="48px" alt="Company Logo">
                             <div id="api" data-name="SelfAsserted" role="main"></div>
                         </div>
-                        <div>
-                            <img class="landingImage" src="./landing-image.svg" alt="Landing Image">
+                        <div style="display: contents; flex-grow: 1;">
+                            <img class="landingImage" src="https://stackeducation.github.io/custom_UI/dev/landing-image.svg" width="600" alt="Landing Image">
                         </div>
                     </div>
                 </div>
