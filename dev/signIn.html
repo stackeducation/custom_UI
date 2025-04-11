@@ -124,14 +124,28 @@
             text-decoration-thickness: 1px;
         }
 
-        .entry-item input {
-            width: 100%;
+        .entry {
+	        width: 396px;
+	        display: flex;
+    	    flex-direction: column;
+    	    gap: 12px;
+        }
+
+        #localAccountForm .entry .entry-item {
+            text-align: left;
+            display: flex;
+                flex-direction: column;
+                gap: 12px;
+        }
+
+        #localAccountForm .entry .entry-item label {
+            font-weight: 500
         }
 
         .entry-item input {
-            height: 50px;
-/*             width: 70%; */
-            border: 1px solid #605e5c;
+            height: 48px;
+            width: 100%;
+            border: 1px solid #D9E6F1;
             border-radius: .5rem;
             text-indent: 20px;
             background-color: #fff !important;
@@ -140,13 +154,13 @@
         }
         
         .buttons #next {
-            width: inherit;
-            padding: 0 20px;
+            width: -webkit-fill-available;
             height: 50px;
-            background-color: #296ec6;
+            background-color: #094074;
             color: #fff;
-            margin-right: 5px;
-            border-radius: .5rem;
+            border: none;
+            outline: none;
+            border-radius: 30px;
         }
         /* .wrapper {
             display: flex;
