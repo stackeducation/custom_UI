@@ -7,24 +7,81 @@
     <style>
         body {
             box-sizing: border-box;
-            /* margin: 0; */
-            /* padding: 0; */
+            margin: 0;
+            padding: 0;
             font-family: Segoe UI, SegoeUI, "Helvetica Neue", Helvetica, Arial, sans-serif;
             font-size: 14px;
             line-height: 1.42857143;
             color: #333;
         }
-        .wrapper {
+        .container {
+            text-align: center;
+            width: 100%;
+            display: table;
+            height: 100vh;
+            padding: 0;
+        }
+        
+        .row {
+            width: 100%;
+            margin: 0;
+            display: table-cell;
+            vertical-align: middle;
+        }
+        
+        .col-lg-6 {
+            /* max-width: 470px; */
+            max-width: 80%;
+            width: 100%;
+            float: none;
+            display: inline-block;
+            vertical-align: top;
+            padding: 0;
+        }
+        
+        .self_asserted_container .row .panel-default {
+            padding: 15px 30px;
+            margin: auto;
+            height: 100%;
+            background-color: #fff;
+        }
+        
+        .panel {
+            margin-bottom: 20px;
+            background-color: #fff;
+            border: 1px solid transparent;
+            border-radius: 8px;
+            -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
+            box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
+        }
+        
+        .panel-default {
+            border-color: #ddd;
+        }
+        
+        .self_asserted_container .row .panel-default .panel-body {
+            /* margin: 0 auto; */
+            /* max-width: 380px; */
+            width: auto;
+            display: flex;
+            justify-content: space-between;
+            padding: 0;
+        }
+
+        .heading, .intro {
+            display: none;
+        }
+        /* .wrapper {
             display: flex;
             justify-content: space-between;
             width: 70%;
             margin: 0 auto;
-        }
+        } */
     </style>
 </head>
 <body>
     <div class="container self_asserted_container role="presentation">
-        <div class="wrapper">
+        <!-- <div class="wrapper">
             <div>
                 <img class="companyLogo" data-tenant-branding-logo="true" src="https://stackeducation.github.io/custom_UI/dev/stack-logo.svg" width="160" height="48px" alt="Company Logo">
                 <h2>Login</h2>
@@ -32,6 +89,22 @@
             </div>
             <div>
                 <img class="landingImage" src="https://stackeducation.github.io/custom_UI/dev/landing-image.svg" width="600" alt="Landing Image">
+            </div>
+        </div> -->
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <div class="branding-wrapper">
+                            <img class="companyLogo" data-tenant-branding-logo="true" src="https://stackeducation.github.io/custom_UI/dev/stack-logo.svg" width="160" height="48px" alt="Company Logo">
+                            <h1 role="heading">Login</h1>
+                            <div id="api" data-name="SelfAsserted" role="main"></div>
+                        </div>
+                        <div style="display: contents; flex-grow: 1;">
+                            <img class="landingImage" src="https://stackeducation.github.io/custom_UI/dev/landing-image.svg" width="600" alt="Landing Image">
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
