@@ -171,6 +171,20 @@
         } */
     </style>
 </head>
+<script defer>
+    setTimeout(() => {
+      const signInButton = document.querySelector('button[type="submit"]');
+      if (signInButton) {
+        console.log("Found button:", signInButton.textContent);
+        signInButton.textContent = 'Login';
+      }
+      const heading = document.querySelector('.heading h1');
+      if (heading) {
+        heading.textContent = "Welcome Back";
+      }
+    }, 100);
+  </script>
+  
 <body>
     <div class="container self_asserted_container role="presentation">
         <div class="row">
@@ -193,7 +207,7 @@
         </div>
     </div>
 
-    <script>
+    <!-- <script>
         const targetNode = document.getElementById('api');
         const observer = new MutationObserver((mutationsList, observer) => {
           const signInButton = document.querySelector('button[type="submit"]');
@@ -207,6 +221,6 @@
           childList: true,
           subtree: true
         });
-      </script>
+      </script> -->
     </body>
 </html>
