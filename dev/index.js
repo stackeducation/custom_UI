@@ -1,3 +1,9 @@
+// Get Login button
+const signInButton = document.getElementById('next');
+console.log("login content:", signInButton.textContent);
+document.querySelector('.buttons #next').textContent = "Login";
+console.log("login after:", signInButton.textContent);
+
 function getQueryParams() {
   const params = {};
   const queryString = window.location.search;
