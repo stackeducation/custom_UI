@@ -171,25 +171,18 @@
     </style>
         <script defer>
             setTimeout(() => { 
-             const signInButton = document.getElementById('next');
+            const signInButton = document.getElementById('next');
+            console.log("login content:", signInButton.textContent);
                 if (signInButton) {
                     signInButton.textContent = 'Login'; 
                 }
+            console.log("login after:", signInButton.textContent);
+            // document.querySelector('.heading h1').textContent = "Create Account";
             }, 100); 
             </script>
 </head>
 <body>
     <div class="container self_asserted_container role="presentation">
-        <!-- <div class="wrapper">
-            <div>
-                <img class="companyLogo" data-tenant-branding-logo="true" src="https://stackeducation.github.io/custom_UI/dev/stack-logo.svg" width="160" height="48px" alt="Company Logo">
-                <h2>Login</h2>
-                <div id="api" data-name="SelfAsserted" role="main"></div>
-            </div>
-            <div>
-                <img class="landingImage" src="https://stackeducation.github.io/custom_UI/dev/landing-image.svg" width="600" alt="Landing Image">
-            </div>
-        </div> -->
         <div class="row">
             <div class="col-lg-6">
                 <div class="panel panel-default">
