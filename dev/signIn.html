@@ -134,8 +134,8 @@
         #localAccountForm .entry .entry-item {
             text-align: left;
             display: flex;
-                flex-direction: column;
-                gap: 12px;
+            flex-direction: column;
+            gap: 12px;
         }
 
         #localAccountForm .entry .entry-item label {
@@ -169,6 +169,14 @@
             margin: 0 auto;
         } */
     </style>
+        <script defer>
+            setTimeout(() => { 
+             const signInButton = document.getElementById('next');
+                if (signInButton) {
+                    signInButton.textContent = 'Login'; 
+                }
+            }, 100); 
+            </script>
 </head>
 <body>
     <div class="container self_asserted_container role="presentation">
