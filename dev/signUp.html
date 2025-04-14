@@ -14,20 +14,8 @@
             font-size: 14px;
             line-height: 1.42857143;
             color: #333;
-             }
+        }
 
-        .extension_tenantName_li, .extension_userRole_li {
-            display: none;
-        }
-        
-        div[data-tenant-branding-background-color=true] {
-            width: 100%;
-            height: 100%;
-            background-color: #296ec6;
-            position: fixed;
-            z-index: -1;
-        }
-        
         .container {
             text-align: center;
             width: 100%;
@@ -35,7 +23,7 @@
             height: 100vh;
             padding: 0;
         }
-        
+
         .row {
             width: 100%;
             margin: 0;
@@ -82,14 +70,25 @@
             padding: 0;
         }
 
-        /* .self_asserted_container .row .panel-default .panel-body .branding-wrapper {
-           display: flex;
-           justify-content: space-around;
-        } */
-        
-        #api {
-            margin: 0 auto;
+        .extension_tenantName_li, .extension_userRole_li {
+            display: none;
         }
+        
+        /* div[data-tenant-branding-background-color=true] {
+            width: 100%;
+            height: 100%;
+            background-color: #296ec6;
+            position: fixed;
+            z-index: -1;
+        } */
+
+        .self_asserted_container .row .panel-default .panel-body .branding-wrapper {
+           text-align: justify;
+        }
+        
+        /* #api {
+            margin: 0 auto;
+        } */
         
         .heading h1 {
             margin-bottom: 20px;
@@ -120,6 +119,10 @@
             color: #505050;
             box-shadow: none;
             text-align: left; */
+        }
+
+        #attributeVerification {
+            width: 396px;
         }
         
         #attributeVerification #attributeList ul {
@@ -166,14 +169,15 @@
         
         .buttons button {
             margin: 0 auto;
-            width: 60%;
+            width: 100%;
             height: 50px;
-            background-color: #296ec6;
-            border-radius: .5rem;
+            background-color: #094074;
+            border-radius: 30px;
             border: none;
+            outline: none;
             color: #fff;
             font-size: 1em;
-            margin-top: 10px;
+            /* margin-top: 10px; */
             cursor: pointer;
             text-transform: none;
         }
