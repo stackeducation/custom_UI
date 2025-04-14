@@ -266,9 +266,11 @@
     <script defer>
 setTimeout(() => { 
  const signUpButton = document.getElementById('continue');
+ console.log("register content:", signUpButton.textContent);
     if (signUpButton) {
         signUpButton.textContent = 'Sign Up'; 
     }
+ console.log("register after:", signUpButton.textContent);
     document.querySelector('.heading h1').textContent = "Create Account";
 }, 100); 
 </script>
