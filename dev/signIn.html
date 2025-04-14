@@ -192,6 +192,21 @@
             </div>
         </div>
     </div>
-    <script src="https://stackeducation.github.io/custom_UI/dev/index.js"></script>
-</body>
+
+    <script>
+        const targetNode = document.getElementById('api');
+        const observer = new MutationObserver((mutationsList, observer) => {
+          const signInButton = document.querySelector('button[type="submit"]');
+          if (signInButton) {
+            signInButton.textContent = "Login";
+            observer.disconnect(); // stop observing once updated
+          }
+        });
+      
+        observer.observe(targetNode, {
+          childList: true,
+          subtree: true
+        });
+      </script>
+    </body>
 </html>
