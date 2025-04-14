@@ -171,16 +171,17 @@
     </style>
         <script defer>
             setTimeout(() => { 
-            const signInButton = document.getElementById('next');
-            console.log("login content:", signInButton.textContent);
-                if (signInButton) {
-                    signInButton.textContent = 'Login'; 
-                }
+                const signInButton = document.getElementById('next');
+                console.log("login content:", signInButton.textContent);
+                //     if (signInButton) {
+                    //         signInButton.textContent = 'Login'; 
+                    //     }
+                    debugger;
+            document.querySelector('.buttons #next').textContent = "Login";
             console.log("login after:", signInButton.textContent);
-            document.querySelector('#next').textContent = "Login";
-            console.log("login after - I:", signInButton.textContent);
+            // console.log("login after - I:", signInButton.textContent);
             }, 100); 
-            </script>
+        </script>
 </head>
 <body>
     <div class="container self_asserted_container role="presentation">
