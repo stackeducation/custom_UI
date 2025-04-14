@@ -153,7 +153,7 @@
             color: #555;
         }
         
-        /* .buttons #next {
+        .buttons #next {
             width: -webkit-fill-available;
             height: 50px;
             background-color: #094074;
@@ -161,7 +161,8 @@
             border: none;
             outline: none;
             border-radius: 30px;
-        } */
+            cursor: pointer;
+        }
         /* .wrapper {
             display: flex;
             justify-content: space-between;
@@ -169,15 +170,6 @@
             margin: 0 auto;
         } */
     </style>
-        <script defer>
-            setTimeout(() => { 
-                const signInButton = document.getElementById('next');
-                console.log("login content:", signInButton.textContent);
-            document.querySelector('.buttons #next').textContent = "Login";
-            console.log("login after:", signInButton.textContent);
-            // console.log("login after - I:", signInButton.textContent);
-            }, 100); 
-        </script>
 </head>
 <body>
     <div class="container self_asserted_container role="presentation">
