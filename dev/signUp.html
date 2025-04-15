@@ -181,6 +181,10 @@
             cursor: pointer;
             text-transform: none;
         }
+
+        .buttons .verifyCode {
+            margin-bottom: 5px;
+        }
         
         .self_asserted_container .row .panel-default .panel-body .intro {
             display: none;
@@ -264,15 +268,15 @@
         }
     </style>
     <script defer>
-setTimeout(() => { 
- const signUpButton = document.getElementById('continue');
- console.log("register content:", signUpButton.textContent);
-    if (signUpButton) {
-        signUpButton.textContent = 'Sign Up'; 
-    }
- console.log("register after:", signUpButton.textContent);
-    document.querySelector('.heading h1').textContent = "Create Account";
-}, 100); 
+        setTimeout(() => { 
+            const signUpButton = document.getElementById('continue');
+            console.log("register content:", signUpButton.textContent);
+                if (signUpButton) {
+                    signUpButton.textContent = 'Sign Up'; 
+                }
+            console.log("register after:", signUpButton.textContent);
+            document.querySelector('.heading h1').textContent = "Create Account";
+        }, 100); 
 </script>
 </head>
 <body>
