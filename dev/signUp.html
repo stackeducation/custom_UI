@@ -83,7 +83,10 @@
         } */
 
         .self_asserted_container .row .panel-default .panel-body .branding-wrapper {
-           text-align: justify;
+            text-align: justify;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-evenly;
         }
         
         /* #api {
@@ -128,11 +131,13 @@
             display: flex;
             flex-direction: column;
             width: 100%;
-        }
-        
-        #attributeList ul {
+            margin: 0;
             padding: 0;
         }
+        
+        /* #attributeList ul {
+            padding: 0;
+        } */
         
         #attributeList ul li {
             list-style: none;
@@ -192,7 +197,7 @@
             width: auto;
             height: auto;
             float: right;
-            margin-top: -80px;
+            margin-top: -75px;
             text-transform: capitalize;
         }
         
@@ -225,7 +230,7 @@
             margin-top: 10px;
         }
 
-        .verificationSuccessText #emailVerificationControl_success_message {
+        .attrEntry .verificationSuccessText {
             display: none;
         }
     </style>
