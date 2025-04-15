@@ -73,7 +73,13 @@
         .extension_tenantName_li, .extension_userRole_li {
             display: none;
         }
-        
+
+        .Password.newPassword_li, 
+        .Password.reenterPassword_li, 
+        .TextBox.displayName_li { 
+            display: none;
+        }
+
         /* div[data-tenant-branding-background-color=true] {
             width: 100%;
             height: 100%;
@@ -218,10 +224,12 @@
     <script defer>
         setTimeout(() => { 
             const signUpButton = document.getElementById('continue');
-            const inputPasswordField = document.getElementById('newPassword');
-            const confirmPasswordField = document.getElementById('reenterPassword');
-            const displayNameField = document.getElementById('displayName');
-
+            const inputPasswordField = document.querySelector('.newPassword_li');
+            const confirmPasswordField = document.querySelector('.reenterPassword_li');
+            const displayNameField = document.querySelector('.displayName_li');
+            console.log("input", inputPasswordField);
+            console.log("confirm", confirmPasswordField);
+            console.log("display", displayNameField);
             if (signUpButton) {
                 signUpButton.textContent = 'Sign Up'; 
             }
@@ -229,43 +237,48 @@
             document.querySelector('.heading h1').textContent = "Create Account";
 
             function onLoad() {
+                console.log("On Load");
                 // Disable the Continue button on load
-                signUpButton.style.display = 'none';
-                inputPasswordField.style.display = 'none';
-                confirmPasswordField.style.display = 'none';
-                displayNameField.style.display = 'none';
+                // signUpButton.style.display = 'none';
+                // inputPasswordField.style.display = 'none';
+                // confirmPasswordField.style.display = 'none';
+                // displayNameField.style.display = 'none';
             }
 
             function onCodeVerified() {
                 // Enable the Continue button when email is verified
-                signUpButton.style.display = 'inline-block';
-                inputPasswordField.style.display = 'inline-block';
-                confirmPasswordField.style.display = 'inline-block';
-                displayNameField.style.display = 'inline-block';
+                console.log("Verified");
+                inputPasswordField.style.display = 'block';
+                confirmPasswordField.style.display = 'block';
+                displayNameField.style.display = 'block';
+                signUpButton.style.display = 'block';
             }
 
             function onCodeSendStart() {
+                console.log("On Code send start");
                 // Optional: Disable continue while waiting
-                signUpButton.style.display = 'none';
-                inputPasswordField.style.display = 'none';
-                confirmPasswordField.style.display = 'none';
-                displayNameField.style.display = 'none';
+                // signUpButton.style.display = 'none';
+                // inputPasswordField.style.display = 'none';
+                // confirmPasswordField.style.display = 'none';
+                // displayNameField.style.display = 'none';
             }
 
             function onCodeSendComplete() {
+                console.log("On code send complete");
                 // Still keep it disabled until code is verified
-                signUpButton.style.display = 'none';
-                inputPasswordField.style.display = 'none';
-                confirmPasswordField.style.display = 'none';
-                displayNameField.style.display = 'none';
+                // signUpButton.style.display = 'none';
+                // inputPasswordField.style.display = 'none';
+                // confirmPasswordField.style.display = 'none';
+                // displayNameField.style.display = 'none';
             }
 
             function onCodeVerificationFailed() {
+                console.log("On Code error");
                 // Disable the Continue button on Error
-                signUpButton.style.display = 'none';
-                inputPasswordField.style.display = 'none';
-                confirmPasswordField.style.display = 'none';
-                displayNameField.style.display = 'none';
+                // signUpButton.style.display = 'none';
+                // inputPasswordField.style.display = 'none';
+                // confirmPasswordField.style.display = 'none';
+                // displayNameField.style.display = 'none';
             }
         }, 100); 
 </script>
