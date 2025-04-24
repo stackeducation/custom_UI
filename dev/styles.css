@@ -25,29 +25,10 @@ body {
 }
 
 .col-lg-6 {
-    /* max-width: 470px; */
-    /* max-width: 80%; */
-    /* width: 100%; */
     float: none;
     display: inline-block;
     vertical-align: top;
     padding: 0;
-}
-
-.self_asserted_container .row .panel-default {
-    /* padding: 15px; */
-    /* margin: auto; */
-    /* height: 100%; */
-    /* background-color: #fff; */
-}
-
-.panel {
-    /* margin-bottom: 20px; */
-    /* background-color: #fff; */
-    /* border: 1px solid transparent;
-    border-radius: 4px;
-    -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
-    box-shadow: 0 1px 1px rgba(0, 0, 0, .05); */
 }
 
 .self_asserted_container .row .panel-default .panel-body {
@@ -59,6 +40,7 @@ body {
     gap: 20px;
     padding: 20px;
     border: 1px solid #DDD;
+    border-radius: 5px;
 }
 
 .extension_tenantName_li, .extension_userRole_li {
