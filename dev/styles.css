@@ -26,8 +26,8 @@ body {
 
 .col-lg-6 {
     /* max-width: 470px; */
-    max-width: 80%;
-    width: 100%;
+    /* max-width: 80%; */
+    /* width: 100%; */
     float: none;
     display: inline-block;
     vertical-align: top;
@@ -35,32 +35,30 @@ body {
 }
 
 .self_asserted_container .row .panel-default {
-    padding: 15px;
-    margin: auto;
-    height: 100%;
-    background-color: #fff;
+    /* padding: 15px; */
+    /* margin: auto; */
+    /* height: 100%; */
+    /* background-color: #fff; */
 }
 
 .panel {
-    margin-bottom: 20px;
-    background-color: #fff;
-    border: 1px solid transparent;
+    /* margin-bottom: 20px; */
+    /* background-color: #fff; */
+    /* border: 1px solid transparent;
     border-radius: 4px;
     -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
-    box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
-}
-
-.panel-default {
-    border-color: #ddd;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, .05); */
 }
 
 .self_asserted_container .row .panel-default .panel-body {
-    /* margin: 0 auto; */
-    /* max-width: 380px; */
+    margin: 0 auto;
+    max-width: 1080px;
     width: auto;
     display: flex;
-    justify-content: space-between;
-    padding: 0;
+    justify-content: center;
+    gap: 20px;
+    padding: 20px;
+    border: 1px solid #DDD;
 }
 
 .extension_tenantName_li, .extension_userRole_li {
