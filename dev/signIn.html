@@ -46,16 +46,16 @@
     </style>
     <script defer>
         setTimeout(() => {
-          const signInButton = document.getElementById('next');
-          if (signInButton) {
-            console.log("Found:", signInButton.textContent);
-            signInButton.textContent = 'Login';
-          }
-        //   const heading = document.querySelector('.heading h1');
-        //   if (heading) {
-        //     heading.textContent = "Welcome Back";
-        //   }
-        }, 100);
+            const forgotPasswordLink = document.getElementById('forgotPassword');
+            const signInButton = document.getElementById('next');
+            if (forgotPasswordLink) {
+                forgotPasswordLink.textContent = 'Forgot Password?'; 
+            }
+            if (signInButton) {
+                console.log("Found:", signInButton.textContent);
+                signInButton.textContent = 'Login';
+            }
+        }, 200);
       </script>
 </head>  
 <body>
