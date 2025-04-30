@@ -46,6 +46,7 @@
     </style>
     <script defer>
         setTimeout(() => {
+            document.querySelector('.heading h1').textContent = "Login";
             const forgotPasswordLink = document.getElementById('forgotPassword');
             const signInButton = document.getElementById('next');
             if (forgotPasswordLink) {
@@ -67,7 +68,6 @@
                         <div class="branding-wrapper">
                             <img class="companyLogo" data-tenant-branding-logo="true" src="https://stackeducation.github.io/custom_UI/dev/stack-logo.svg" width="160" height="48px" alt="Company Logo">
                             <div class="formWrapper">
-                                <h1 role="heading">Login</h1>
                                 <div id="api" data-name="SelfAsserted" role="main"></div>
                             </div>
                         </div>
