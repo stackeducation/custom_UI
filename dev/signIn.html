@@ -46,7 +46,7 @@
     </style>
     <script defer>
         setTimeout(() => {
-          const signInButton = document.querySelector('button[type="submit"]');
+          const signInButton = document.getElementById('next');
           if (signInButton) {
             console.log("Found:", signInButton.textContent);
             signInButton.textContent = 'Login';
