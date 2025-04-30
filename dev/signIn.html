@@ -44,21 +44,20 @@
             color: #555;
         }
     </style>
-</head>
-<script defer>
-    setTimeout(() => {
-      const signInButton = document.querySelector('button[type="submit"]');
-      if (signInButton) {
-        console.log("Found button:", signInButton.textContent);
-        signInButton.textContent = 'Login';
-      }
-      const heading = document.querySelector('.heading h1');
-      if (heading) {
-        heading.textContent = "Welcome Back";
-      }
-    }, 100);
-  </script>
-  
+    <script defer>
+        setTimeout(() => {
+          const signInButton = document.querySelector('button[type="submit"]');
+          if (signInButton) {
+            console.log("Found:", signInButton.textContent);
+            signInButton.textContent = 'Login';
+          }
+        //   const heading = document.querySelector('.heading h1');
+        //   if (heading) {
+        //     heading.textContent = "Welcome Back";
+        //   }
+        }, 100);
+      </script>
+</head>  
 <body>
     <div class="container self_asserted_container role="presentation">
         <div class="row">
@@ -73,7 +72,7 @@
                             </div>
                         </div>
                         <div style="display: contents; flex-grow: 1;">
-                            <img class="landingImage" src="https://stackeducation.github.io/custom_UI/dev/landing-image.svg" width="600" alt="Landing Image">
+                            <img class="landingImage" src="https://stackeducation.github.io/custom_UI/dev/stack-illustration.svg" width="600" alt="Landing Image">
                         </div>
                     </div>
                 </div>
