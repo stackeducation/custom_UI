@@ -6,10 +6,6 @@
     <link rel="stylesheet" href="https://stackeducation.github.io/custom_UI/dev/styles.css">
     <title>Sign In</title>
     <style>
-        .heading, .intro {
-            display: none;
-        }
-
         a {
             text-decoration: none;
             text-decoration-thickness: 1px;
@@ -46,7 +42,7 @@
     </style>
     <script defer>
         setTimeout(() => {
-            // document.querySelector('.heading h1').textContent = "Login";
+            document.querySelector('.heading h1').textContent = "Login";
             const forgotPasswordLink = document.getElementById('forgotPassword');
             const signInButton = document.getElementById('next');
             if (forgotPasswordLink) {
@@ -58,30 +54,6 @@
             }
         }, 200);
       </script>
-      <!-- <script defer>
-        document.addEventListener("DOMContentLoaded", function () {
-          const observer = new MutationObserver(() => {
-            const signInButton = document.getElementById('next');
-            const forgotPasswordLink = document.getElementById('forgotPassword');
-      
-            // if (signInButton) {
-            //   signInButton.textContent = 'Login'; // Change "Sign in" to "Login"
-            // }
-      
-            if (forgotPasswordLink) {
-              forgotPasswordLink.textContent = 'Forgot Password?'; // Custom text
-            }
-      
-            if (signInButton || forgotPasswordLink) {
-              observer.disconnect(); // Stop observing once the changes are made
-            }
-          });
-      
-          // Observe the whole document for changes
-          observer.observe(document.body, { childList: true, subtree: true });
-        });
-      </script> -->
-      
 </head>  
 <body>
     <div class="container self_asserted_container" role="presentation">
@@ -92,7 +64,6 @@
                         <div class="branding-wrapper">
                             <img class="companyLogo" data-tenant-branding-logo="true" src="https://stackeducation.github.io/custom_UI/dev/stack-logo.svg" width="160" height="48px" alt="Company Logo">
                             <div class="formWrapper">
-                                <h1 role="heading">Login</h1>
                                 <div id="api" data-name="SelfAsserted" role="main"></div>
                             </div>
                         </div>
