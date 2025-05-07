@@ -105,7 +105,7 @@ h1 {
     margin-top: 2rem;
 }
 
-.self_asserted_container .row .panel-default .panel-body #api #attributeVerification .error {
+.self_asserted_container .row .panel-default .panel-body #api #attributeVerification .error, #localAccountForm .error {
     color: #b00;
     text-align: left;
 }
