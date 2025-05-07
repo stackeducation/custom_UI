@@ -110,6 +110,10 @@ h1 {
     text-align: left;
 }
 
+#localAccountForm .error p {
+    margin: 0;
+}
+
 .self_asserted_container .row .panel-default .panel-body #api .verifying-modal {
     display: none;
     margin-top: 10px;
