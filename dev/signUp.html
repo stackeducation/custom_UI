@@ -1,9 +1,15 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Prevent FOUC -->
+    <style>
+        .container { visibility: hidden; }
+        .js-loaded .container { visibility: visible; }
+    </style>
+    <!-- Preload CSS -->
+    <link rel="preload" href="https://stackeducation.github.io/custom_UI/dev/styles.css" as="style">
     <link rel="stylesheet" href="https://stackeducation.github.io/custom_UI/dev/styles.css">
     <title>Sign Up</title>
     <style>
@@ -21,6 +27,12 @@
         }
     </style>
     <script defer>
+        // Add class when CSS is loaded
+        const stylesheet = document.querySelector('link[rel="stylesheet"]');
+        stylesheet.addEventListener('load', () => {
+            document.documentElement.classList.add('js-loaded');
+        });
+
         setTimeout(() => { 
             const signUpButton = document.getElementById('continue');
             if (signUpButton) {
