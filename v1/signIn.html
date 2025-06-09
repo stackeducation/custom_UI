@@ -217,10 +217,23 @@
             }
         }
 
+        function fixEmailValidationPattern() {
+            // Fix the invalid email regex pattern that causes console errors
+            const emailInputs = document.querySelectorAll('input[type="email"], input[pattern*="@"]');
+            emailInputs.forEach(input => {
+                if (input.pattern && input.pattern.includes('!#$%&\'+^_`{}~')) {
+                    // Replace with a simpler, valid email pattern
+                    input.pattern = '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$';
+                    console.log("Fixed email validation pattern");
+                }
+            });
+        }
+
         function tryUpdateAllElements() {
             updateHeading();
             updateForgotPasswordLink();
             updateSignInButton();
+            fixEmailValidationPattern();
         }
 
         // Use MutationObserver to watch for when elements are added to the DOM
