@@ -249,12 +249,11 @@
           const loginBtn = document.getElementById('next');
           if (loginBtn) {
             loginBtn.addEventListener('click', function () {
-              // Show errors on login click
-              formWrapper.classList.remove('hide-errors');
-
-              // Prevent button jerk by locking current height
+              // Prevent button jerk by locking current height BEFORE showing errors
               const currentHeight = wrapperContainer.offsetHeight;
               wrapperContainer.style.minHeight = currentHeight + 'px';
+              // Show errors on login click
+              formWrapper.classList.remove('hide-errors');
             });
           }
         }, 500);
