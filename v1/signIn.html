@@ -54,6 +54,7 @@
             flex-direction: column;
             justify-content: flex-start;
             margin-top: 30px;
+            min-height: 400px;
         }
         h1 {
             font-size: 30px;
@@ -79,6 +80,15 @@
             font-size: 1em;
             cursor: pointer;
             text-transform: none;
+            position: relative;
+            transition: none;
+            transform: translateZ(0);
+        }
+       
+        .buttons button:active,
+        .buttons button:focus {
+            transform: translateZ(0);
+            outline: none;
         }
         .buttons .verifyCode {
             margin-top: 25px;
@@ -111,6 +121,7 @@
         }
         #attributeVerification {
             width: 396px;
+            min-height: 300px;
         }
         #attributeVerification #attributeList ul {
             display: flex;
@@ -122,36 +133,25 @@
         #attributeVerification #attributeList ul li input {
             width: -webkit-fill-available;
             height: 40px;
-            border: 1px solid #D9E6F1; 
+            border: 1px solid #D9E6F1;
             border-radius: .5rem;
             text-indent: 15px;
             color: #555;
             margin: 8px 0;
+            box-sizing: border-box;
+        }
+        #attributeVerification #attributeList ul li input:focus {
+            outline: 2px solid #094074;
+            outline-offset: -2px;
+            border-color: #094074;
         }
         #attributeList ul li {
             list-style: none;
             margin: 6px 0;
-            /* Reserve space for label and error */
-            min-height: 60px;
-            position: relative;
         }
         #attributeList ul li label {
             font-size: 18px;
             font-weight: 600;
-            min-height: 22px;
-            display: block;
-            /* Always reserve space for label */
-            visibility: visible;
-        }
-        #attributeList ul li .error-container {
-            min-height: 18px;
-            display: block;
-            /* Always reserve space for error */
-            visibility: hidden;
-        }
-        #attributeList ul li .error-container.visible {
-            visibility: visible;
-            color: #b00;
         }
         #attributeList ul li .helpLink {
             display: none;
@@ -173,10 +173,11 @@
             color: #094074;
         }
         .entry {
-	        width: 396px;
-	        display: flex;
-	        flex-direction: column;
-	        gap: 12px;
+            width: 396px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            min-height: 200px;
         }
         #localAccountForm .entry .entry-item {
             display: flex;
@@ -193,107 +194,109 @@
             border-radius: .5rem;
             text-indent: 15px;
             color: #555;
+            box-sizing: border-box;
+        }
+        .entry-item input:focus {
+            outline: 2px solid #094074;
+            outline-offset: -2px;
+            border-color: #094074;
+        }
+        #api {
+            min-height: 350px;
+            position: relative;
+        }
+        .formWrapper {
+            position: relative;
+            min-height: 350px;
+        }
+        .error {
+            min-height: 1em;
+            display: block;
+        }
+        .buttons {
+            position: relative;
+            margin-top: 20px;
         }
     </style>
     <script defer>
-        // Track which elements have been updated to avoid duplicate updates
-        const updatedElements = {
-            heading: false,
-            forgotPassword: false,
-            signInButton: false
-        };
-
-        function updateHeading() {
-            if (updatedElements.heading) return;
+        function stabilizeLayout() {
+            const apiContainer = document.getElementById('api');
+            if (apiContainer) {
+                apiContainer.style.minHeight = '350px';
+            }
+           
+            const brandingWrapper = document.querySelector('.branding-wrapper');
+            if (brandingWrapper) {
+                brandingWrapper.style.minHeight = '400px';
+            }
+        }
+        function preventButtonJerk() {
+            const observer = new MutationObserver((mutations) => {
+                mutations.forEach((mutation) => {
+                    if (mutation.type === 'childList' || mutation.type === 'characterData') {
+                        const buttons = document.querySelectorAll('.buttons button');
+                        buttons.forEach(button => {
+                            button.style.transform = 'translateZ(0)';
+                            button.style.position = 'relative';
+                        });
+                    }
+                });
+            });
+            const formContainer = document.getElementById('api');
+            if (formContainer) {
+                observer.observe(formContainer, {
+                    childList: true,
+                    subtree: true,
+                    characterData: true
+                });
+            }
+        }
+        document.addEventListener('DOMContentLoaded', function() {
+            stabilizeLayout();
+            preventButtonJerk();
+        });
+       
+        setTimeout(() => {
+            stabilizeLayout();
+            preventButtonJerk();
             const heading = document.querySelector('.heading h1');
             if (heading) {
                 heading.textContent = "Login";
-                updatedElements.heading = true;
-                console.log("Updated heading");
             }
-        }
-
-        function updateForgotPasswordLink() {
-            if (updatedElements.forgotPassword) return;
             const forgotPasswordLink = document.getElementById('forgotPassword');
+            const signInButton = document.getElementById('next');
             if (forgotPasswordLink) {
                 forgotPasswordLink.textContent = 'Forgot Password?';
-                updatedElements.forgotPassword = true;
-                console.log("Updated forgot password link");
             }
-        }
-
-        function updateSignInButton() {
-            if (updatedElements.signInButton) return;
-            const signInButton = document.getElementById('next');
             if (signInButton) {
                 console.log("Found:", signInButton.textContent);
                 signInButton.textContent = 'Login';
-                updatedElements.signInButton = true;
-                console.log("Updated sign in button");
+                signInButton.style.transform = 'translateZ(0)';
+                signInButton.style.position = 'relative';
             }
-        }
-
-        function fixEmailValidationPattern() {
-            // Fix the invalid email regex pattern that causes console errors
-            const emailInputs = document.querySelectorAll('input[type="email"], input[pattern*="@"]');
-            emailInputs.forEach(input => {
-                if (input.pattern && input.pattern.includes('!#$%&\'+^_`{}~')) {
-                    // Replace with a simpler, valid email pattern
-                    input.pattern = '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$';
-                    console.log("Fixed email validation pattern");
-                }
+            const allButtons = document.querySelectorAll('button');
+            allButtons.forEach(button => {
+                button.addEventListener('mousedown', function(e) {
+                    e.preventDefault();
+                    this.style.transform = 'translateZ(0)';
+                });
+                button.addEventListener('focus', function() {
+                    this.style.transform = 'translateZ(0)';
+                });
             });
-        }
-
-        function tryUpdateAllElements() {
-            updateHeading();
-            updateForgotPasswordLink();
-            updateSignInButton();
-            fixEmailValidationPattern();
-        }
-
-        // Use MutationObserver to watch for when elements are added to the DOM
-        const observer = new MutationObserver((mutations) => {
-            let shouldCheck = false;
-            
-            mutations.forEach((mutation) => {
-                if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
-                    shouldCheck = true;
-                }
-            });
-            
-            if (shouldCheck) {
-                tryUpdateAllElements();
-                
-                // Stop observing if all elements have been updated
-                if (updatedElements.heading && updatedElements.forgotPassword && updatedElements.signInButton) {
-                    observer.disconnect();
-                    console.log("All elements updated, stopping observer");
-                }
+           
+        }, 200);
+        document.addEventListener('click', function(e) {
+            if (e.target.tagName === 'INPUT') {
+                setTimeout(() => {
+                    const buttons = document.querySelectorAll('.buttons button');
+                    buttons.forEach(button => {
+                        button.style.transform = 'translateZ(0)';
+                    });
+                }, 10);
             }
         });
-
-        // Start observing when the DOM is ready
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', () => {
-                observer.observe(document.body, { childList: true, subtree: true });
-                tryUpdateAllElements();
-                
-                // Fallback timeouts for elements that might load later
-                setTimeout(tryUpdateAllElements, 500);
-                setTimeout(tryUpdateAllElements, 1000);
-                setTimeout(tryUpdateAllElements, 2000);
-            });
-        } else {
-            observer.observe(document.body, { childList: true, subtree: true });
-            tryUpdateAllElements();
-            
-            // Fallback timeouts for elements that might load later
-            setTimeout(tryUpdateAllElements, 500);
-            setTimeout(tryUpdateAllElements, 1000);
-            setTimeout(tryUpdateAllElements, 2000);
-        }
+       
     </script>
 </head>  
 <body>
@@ -316,5 +319,5 @@
             </div>
         </div>
     </div>
-    </body>
+</body>
 </html>
