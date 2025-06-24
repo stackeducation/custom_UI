@@ -3,321 +3,267 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign In</title>
-    <style>
-        body {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: Lato, sans-serif;
-            font-size: 14px;
-            font-weight: 400;
-            line-height: 1.42857143;
-            color: #333;
-        }
-        .container {
-            text-align: center;
-            width: 100%;
-            display: table;
-            height: 100vh;
-            padding: 0;
-        }
-        .row {
-            width: 100%;
-            margin: 0;
-            display: table-cell;
-            vertical-align: middle;
-        }
-        .col-lg-6 {
-            float: none;
-            display: inline-block;
-            vertical-align: top;
-            padding: 0;
-        }
-        .self_asserted_container .row .panel-default .panel-body {
-            margin: 0 auto;
-            max-width: 1080px;
-            width: auto;
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            padding: 20px;
-            border: 1px solid #DDD;
-            border-radius: 5px;
-        }
-        .extension_tenantName_li, .extension_userRole_li , .extension_documentSources_li, .displayName_li, .extension_displayName_li{
-            display: none;
-        }
-        .self_asserted_container .row .panel-default .panel-body .branding-wrapper {
-            text-align: justify;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start;
-            margin-top: 30px;
-            min-height: 400px;
-        }
-        h1 {
-            font-size: 30px;
-            font-family: inherit;
-            font-weight: 800;
-            line-height: 100%;
-            color: #212121;
-        }
-        .buttons #cancel {
-            display: none;
-        }
-        .buttons button:not([aria-disabled=true]) {
-            opacity: 1;
-        }
-        .buttons button {
-            width: 100%;
-            height: 48px;
-            background-color: #094074;
-            border-radius: 30px;
-            border: none;
-            outline: none;
-            color: #fff;
-            font-size: 1em;
-            cursor: pointer;
-            text-transform: none;
-            position: relative;
-            transition: none;
-            transform: translateZ(0);
-        }
-       
-        .buttons button:active,
-        .buttons button:focus {
-            transform: translateZ(0);
-            outline: none;
-        }
-        .buttons .verifyCode {
-            margin-top: 25px;
-        }
-        .buttons .sendNewCode {
-            background: none;
-            outline: none;
-            color: #094074;
-            width: auto;
-            height: auto;
-            float: right;
-            margin-top: -80px;
-            text-transform: capitalize;
-        }
-        .self_asserted_container .row .panel-default .panel-body .intro {
-            display: none;
-            text-align: left;
-            margin-top: 2rem;
-        }
-        .self_asserted_container .row .panel-default .panel-body #api #attributeVerification .error, #localAccountForm .error {
-            color: #b00;
-            text-align: left;
-        }
-        #localAccountForm .error p {
-            margin: 0;
-        }
-        .self_asserted_container .row .panel-default .panel-body #api .verifying-modal {
-            display: none;
-            margin-top: 10px;
-        }
-        #attributeVerification {
-            width: 396px;
-            min-height: 300px;
-        }
-        #attributeVerification #attributeList ul {
-            display: flex;
-            flex-direction: column;
-            width: 100%;
-            margin: 0;
-            padding: 0;
-        }
-        #attributeVerification #attributeList ul li input {
-            width: -webkit-fill-available;
-            height: 40px;
-            border: 1px solid #D9E6F1;
-            border-radius: .5rem;
-            text-indent: 15px;
-            color: #555;
-            margin: 8px 0;
-            box-sizing: border-box;
-        }
-        #attributeVerification #attributeList ul li input:focus {
-            outline: 2px solid #094074;
-            outline-offset: -2px;
-            border-color: #094074;
-        }
-        #attributeList ul li {
-            list-style: none;
-            margin: 6px 0;
-        }
-        #attributeList ul li label {
-            font-size: 18px;
-            font-weight: 600;
-        }
-        #attributeList ul li .helpLink {
-            display: none;
-        }
-        .attrEntry .verificationSuccessText {
-            display: none;
-        }
-        span.required {
-            position: absolute;
-            right: 6%;
-            font-size: 1.4em;
-            color: red;
-            margin-top: .5em;
-        }
-        a {
-            text-decoration: none;
-            text-decoration-thickness: 1px;
-            float: right;
-            color: #094074;
-        }
-        .entry {
-            width: 396px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            min-height: 200px;
-        }
-        #localAccountForm .entry .entry-item {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-        #localAccountForm .entry .entry-item label {
-            font-weight: 600;
-        }
-        .entry-item input {
-            height: 44px;
-            width: -webkit-fill-available;
-            border: 1px solid #D9E6F1;
-            border-radius: .5rem;
-            text-indent: 15px;
-            color: #555;
-            box-sizing: border-box;
-        }
-        .entry-item input:focus {
-            outline: 2px solid #094074;
-            outline-offset: -2px;
-            border-color: #094074;
-        }
-        #api {
-            min-height: 350px;
-            position: relative;
-        }
-        .formWrapper {
-            position: relative;
-            min-height: 350px;
-        }
-        .error {
-            min-height: 1em;
-            display: block;
-        }
-        .buttons {
-            position: relative;
-            margin-top: 20px;
-        }
-    </style>
-    <script defer>
-        function stabilizeLayout() {
-            const apiContainer = document.getElementById('api');
-            if (apiContainer) {
-                apiContainer.style.minHeight = '350px';
-            }
-           
-            const brandingWrapper = document.querySelector('.branding-wrapper');
-            if (brandingWrapper) {
-                brandingWrapper.style.minHeight = '400px';
-            }
-        }
-        function preventButtonJerk() {
-            const observer = new MutationObserver((mutations) => {
-                mutations.forEach((mutation) => {
-                    if (mutation.type === 'childList' || mutation.type === 'characterData') {
-                        const buttons = document.querySelectorAll('.buttons button');
-                        buttons.forEach(button => {
-                            button.style.transform = 'translateZ(0)';
-                            button.style.position = 'relative';
-                        });
-                    }
-                });
-            });
-            const formContainer = document.getElementById('api');
-            if (formContainer) {
-                observer.observe(formContainer, {
-                    childList: true,
-                    subtree: true,
-                    characterData: true
-                });
-            }
-        }
-        document.addEventListener('DOMContentLoaded', function() {
-            stabilizeLayout();
-            preventButtonJerk();
-        });
-       
+  <title>Sign In</title>
+  <style>
+    body {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Lato, sans-serif;
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 1.42857143;
+      color: #333;
+    }
+    .container {
+      text-align: center;
+      width: 100%;
+      display: table;
+      height: 100vh;
+      padding: 0;
+    }
+    .row {
+      width: 100%;
+      margin: 0;
+      display: table-cell;
+      vertical-align: middle;
+    }
+    .col-lg-6 {
+      float: none;
+      display: inline-block;
+      vertical-align: top;
+      padding: 0;
+    }
+    .self_asserted_container .row .panel-default .panel-body {
+      margin: 0 auto;
+      max-width: 1080px;
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      padding: 20px;
+      border: 1px solid #DDD;
+      border-radius: 5px;
+    }
+
+    .extension_tenantName_li,
+    .extension_userRole_li,
+    .extension_documentSources_li,
+    .displayName_li,
+    .extension_displayName_li {
+      display: none;
+    }
+    .self_asserted_container .row .panel-default .panel-body .branding-wrapper {
+      text-align: justify;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      margin-top: 30px;
+      min-height: 400px;
+    }
+    h1 {
+      font-size: 30px;
+      font-family: inherit;
+      font-weight: 800;
+      color: #212121;
+    }
+
+    .buttons #cancel {
+      display: none;
+    }
+
+    .buttons button {
+      width: 100%;
+      height: 48px;
+      background-color: #094074;
+      border-radius: 30px;
+      border: none;
+      outline: none;
+      color: #fff;
+      font-size: 1em;
+      cursor: pointer;
+      text-transform: none;
+    }
+
+    .buttons button:active,
+    .buttons button:focus {
+      outline: none;
+    }
+    .buttons .verifyCode {
+      margin-top: 25px;
+    }
+    .buttons .sendNewCode {
+      background: none;
+      outline: none;
+      color: #094074;
+      float: right;
+      margin-top: -80px;
+      text-transform: capitalize;
+    }
+
+    .intro {
+      display: none;
+      text-align: left;
+      margin-top: 2rem;
+    }
+
+    #localAccountForm .error {
+      color: #b00;
+      text-align: left;
+      display: block;
+    }
+
+    .hide-errors .error {
+      display: none !important;
+    }
+
+    #attributeVerification {
+      width: 396px;
+    }
+
+    #attributeVerification #attributeList ul {
+      display: flex;
+      flex-direction: column;
+      padding: 0;
+      margin: 0;
+    }
+
+    #attributeVerification #attributeList ul li input {
+      width: -webkit-fill-available;
+      height: 40px;
+      border: 1px solid #D9E6F1;
+      border-radius: 0.5rem;
+      text-indent: 15px;
+      color: #555;
+      margin: 8px 0;
+    }
+
+    #attributeVerification #attributeList ul li input:focus {
+      outline: 2px solid #094074;
+      border-color: #094074;
+    }
+
+    #attributeList ul li {
+      list-style: none;
+      margin: 6px 0;
+    }
+
+    #attributeList ul li label {
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    #attributeList ul li .helpLink {
+      display: none;
+    }
+
+    .attrEntry .verificationSuccessText {
+      display: none;
+    }
+
+    span.required {
+      position: absolute;
+      right: 6%;
+      font-size: 1.4em;
+      color: red;
+      margin-top: 0.5em;
+    }
+
+    a {
+      text-decoration: none;
+      float: right;
+      color: #094074;
+    }
+
+    .entry {
+      width: 396px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .entry .entry-item {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .entry .entry-item label {
+      font-weight: 600;
+    }
+
+    .entry-item input {
+      height: 44px;
+      width: -webkit-fill-available;
+      border: 1px solid #D9E6F1;
+      border-radius: 0.5rem;
+      text-indent: 15px;
+      color: #555;
+    }
+
+    .entry-item input:focus {
+      outline: 2px solid #094074;
+      border-color: #094074;
+    }
+
+    #api {
+      position: relative;
+    }
+
+    .formWrapper {
+      position: relative;
+    }
+
+    .buttons {
+      margin-top: 20px;
+    }
+  </style>
+
+  <script defer>
+    document.addEventListener('DOMContentLoaded', function () {
+      const formWrapper = document.getElementById('api');
+
+      if (formWrapper) {
+        // Step 1: Hide all error messages on initial load
+        formWrapper.classList.add('hide-errors');
+
+        // Step 2: Wait for Azure B2C to render the login button
         setTimeout(() => {
-            stabilizeLayout();
-            preventButtonJerk();
-            const heading = document.querySelector('.heading h1');
-            if (heading) {
-                heading.textContent = "Login";
-            }
-            const forgotPasswordLink = document.getElementById('forgotPassword');
-            const signInButton = document.getElementById('next');
-            if (forgotPasswordLink) {
-                forgotPasswordLink.textContent = 'Forgot Password?';
-            }
-            if (signInButton) {
-                console.log("Found:", signInButton.textContent);
-                signInButton.textContent = 'Login';
-                signInButton.style.transform = 'translateZ(0)';
-                signInButton.style.position = 'relative';
-            }
-            const allButtons = document.querySelectorAll('button');
-            allButtons.forEach(button => {
-                button.addEventListener('mousedown', function(e) {
-                    e.preventDefault();
-                    this.style.transform = 'translateZ(0)';
-                });
-                button.addEventListener('focus', function() {
-                    this.style.transform = 'translateZ(0)';
-                });
+          const loginBtn = document.getElementById('next');
+          if (loginBtn) {
+            loginBtn.addEventListener('click', function () {
+              // Step 3: Show validation errors only after Login button click
+              formWrapper.classList.remove('hide-errors');
             });
-           
-        }, 200);
-        document.addEventListener('click', function(e) {
-            if (e.target.tagName === 'INPUT') {
-                setTimeout(() => {
-                    const buttons = document.querySelectorAll('.buttons button');
-                    buttons.forEach(button => {
-                        button.style.transform = 'translateZ(0)';
-                    });
-                }, 10);
-            }
-        });
-       
-    </script>
-</head>  
+          }
+        }, 500);
+      }
+    });
+  </script>
+</head>
+
 <body>
-    <div class="container self_asserted_container" role="presentation">
-        <div class="row">
-            <div class="col-lg-6">
-                <div class="panel panel-default">
-                    <div class="panel-body">
-                        <div class="branding-wrapper">
-                            <img class="companyLogo" data-tenant-branding-logo="true" src="https://stackeducation.github.io/custom_UI/dev/stack-logo.svg" width="160" height="48px" alt="Company Logo">
-                            <div class="formWrapper">
-                                <div id="api" data-name="SelfAsserted" role="main"></div>
-                            </div>
-                        </div>
-                        <div style="display: contents; flex-grow: 1;">
-                            <img class="landingImage" src="https://stackeducation.github.io/custom_UI/dev/stack-illustration.svg" width="600" alt="Landing Image">
-                        </div>
-                    </div>
-                </div>
+  <div class="container self_asserted_container" role="presentation">
+    <div class="row">
+      <div class="col-lg-6">
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <div class="branding-wrapper">
+              <img class="companyLogo" data-tenant-branding-logo="true"
+                src="https://stackeducation.github.io/custom_UI/dev/stack-logo.svg" width="160" height="48px"
+                alt="Company Logo" />
+              <div class="formWrapper">
+                <div id="api" class="hide-errors" data-name="SelfAsserted" role="main"></div>
+              </div>
             </div>
+            <div style="display: contents; flex-grow: 1;">
+              <img class="landingImage"
+                src="https://stackeducation.github.io/custom_UI/dev/stack-illustration.svg" width="600"
+                alt="Landing Image" />
+            </div>
+          </div>
         </div>
+      </div>
     </div>
+  </div>
 </body>
 </html>
