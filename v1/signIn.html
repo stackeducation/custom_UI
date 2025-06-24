@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Sign In</title>
+  <title>Login</title>
   <style>
     body {
       box-sizing: border-box;
@@ -148,7 +148,7 @@
     }
 
     #attributeVerification #attributeList ul li input:focus {
-      outline: 2px solid #094074;
+      outline: 1px solid #094074;
       border-color: #094074;
     }
 
@@ -211,7 +211,7 @@
     }
 
     .entry-item input:focus {
-      outline: 2px solid #094074;
+      outline: 1px solid #094074;
       border-color: #094074;
     }
 
@@ -233,7 +233,13 @@
     document.addEventListener('DOMContentLoaded', function () {
       const formWrapper = document.getElementById('api');
       const wrapperContainer = document.querySelector('.formWrapper');
-
+      // Set login button text to 'Login'
+      setTimeout(() => {
+        const loginBtn = document.getElementById('next');
+        if (loginBtn) {
+          loginBtn.textContent = 'Login';
+        }
+      }, 100);
       if (formWrapper && wrapperContainer) {
         // Hide errors on initial load
         formWrapper.classList.add('hide-errors');
