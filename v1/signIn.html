@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Sign In</title>
   <style>
     body {
@@ -15,6 +15,7 @@
       line-height: 1.42857143;
       color: #333;
     }
+
     .container {
       text-align: center;
       width: 100%;
@@ -22,18 +23,21 @@
       height: 100vh;
       padding: 0;
     }
+
     .row {
       width: 100%;
       margin: 0;
       display: table-cell;
       vertical-align: middle;
     }
+
     .col-lg-6 {
       float: none;
       display: inline-block;
       vertical-align: top;
       padding: 0;
     }
+
     .self_asserted_container .row .panel-default .panel-body {
       margin: 0 auto;
       max-width: 1080px;
@@ -52,6 +56,7 @@
     .extension_displayName_li {
       display: none;
     }
+
     .self_asserted_container .row .panel-default .panel-body .branding-wrapper {
       text-align: justify;
       display: flex;
@@ -60,6 +65,7 @@
       margin-top: 30px;
       min-height: 400px;
     }
+
     h1 {
       font-size: 30px;
       font-family: inherit;
@@ -82,15 +88,18 @@
       font-size: 1em;
       cursor: pointer;
       text-transform: none;
+      transition: transform 0.3s ease;
     }
 
     .buttons button:active,
     .buttons button:focus {
       outline: none;
     }
+
     .buttons .verifyCode {
       margin-top: 25px;
     }
+
     .buttons .sendNewCode {
       background: none;
       outline: none;
@@ -110,6 +119,7 @@
       color: #b00;
       text-align: left;
       display: block;
+      transition: all 0.3s ease;
     }
 
     .hide-errors .error {
@@ -211,6 +221,7 @@
 
     .formWrapper {
       position: relative;
+      min-height: 400px; /* Lock height after error shows */
     }
 
     .buttons {
@@ -221,18 +232,23 @@
   <script defer>
     document.addEventListener('DOMContentLoaded', function () {
       const formWrapper = document.getElementById('api');
+      const wrapperContainer = document.querySelector('.formWrapper');
 
-      if (formWrapper) {
-        // Step 1: Hide all error messages on initial load
+      if (formWrapper && wrapperContainer) {
+        // Hide errors on initial load
         formWrapper.classList.add('hide-errors');
 
-        // Step 2: Wait for Azure B2C to render the login button
+        // Wait for login button to load
         setTimeout(() => {
           const loginBtn = document.getElementById('next');
           if (loginBtn) {
             loginBtn.addEventListener('click', function () {
-              // Step 3: Show validation errors only after Login button click
+              // Show errors on login click
               formWrapper.classList.remove('hide-errors');
+
+              // Prevent button jerk by locking current height
+              const currentHeight = wrapperContainer.offsetHeight;
+              wrapperContainer.style.minHeight = currentHeight + 'px';
             });
           }
         }, 500);
