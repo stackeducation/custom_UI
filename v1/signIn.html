@@ -248,11 +248,12 @@
         setTimeout(() => {
           const loginBtn = document.getElementById('next');
           if (loginBtn) {
-            loginBtn.addEventListener('click', function () {
+            // Use mousedown so we run BEFORE the default click handler submits form
+            loginBtn.addEventListener('mousedown', function () {
               // Prevent button jerk by locking current height BEFORE showing errors
               const currentHeight = wrapperContainer.offsetHeight;
               wrapperContainer.style.minHeight = currentHeight + 'px';
-              // Show errors on login click
+              // Show errors (if any) on login click
               formWrapper.classList.remove('hide-errors');
             });
           }
