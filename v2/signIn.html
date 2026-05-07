@@ -253,68 +253,68 @@
         }
     </style>
     <script defer>
-        function customizeB2CUI() {
-            const b2cHeading = document.querySelector("#api .heading");
+        // function customizeB2CUI() {
+        //     const b2cHeading = document.querySelector("#api .heading");
 
-            if (b2cHeading) {
-                b2cHeading.style.display = "none";
-            }
+        //     if (b2cHeading) {
+        //         b2cHeading.style.display = "none";
+        //     }
 
-            const intro = document.querySelector(".intro");
+        //     const intro = document.querySelector(".intro");
 
-            if (intro) {
-                intro.style.display = "none";
-            }
+        //     if (intro) {
+        //         intro.style.display = "none";
+        //     }
 
-            const signInButton = document.getElementById("next");
+        //     const signInButton = document.getElementById("next");
 
-            if (signInButton) {
-                signInButton.textContent = "SIGN IN";
-            }
+        //     if (signInButton) {
+        //         signInButton.textContent = "SIGN IN";
+        //     }
 
-            const forgotPassword = document.getElementById("forgotPassword");
+        //     const forgotPassword = document.getElementById("forgotPassword");
 
-            if (forgotPassword) {
-                forgotPassword.textContent = "Forgot password?";
-            }
+        //     if (forgotPassword) {
+        //         forgotPassword.textContent = "Forgot password?";
+        //     }
 
-            const emailInput = document.getElementById("email");
+        //     const emailInput = document.getElementById("email");
 
-            if (emailInput) {
-                emailInput.placeholder = "Enter your email";
-            }
+        //     if (emailInput) {
+        //         emailInput.placeholder = "Enter your email";
+        //     }
 
-            const passwordInput = document.getElementById("password");
+        //     const passwordInput = document.getElementById("password");
 
-            if (passwordInput) {
-                passwordInput.placeholder = "Enter Password";
-            }
-        }
+        //     if (passwordInput) {
+        //         passwordInput.placeholder = "Enter Password";
+        //     }
+        // }
 
-        function startObserver() {
-            const targetNode = document.body || document.documentElement;
+        // function startObserver() {
+        //     const targetNode = document.body || document.documentElement;
 
-            if (!targetNode) {
-                return;
-            }
+        //     if (!targetNode) {
+        //         return;
+        //     }
 
-            const observer = new MutationObserver(() => {
-                customizeB2CUI();
-            });
+        //     const observer = new MutationObserver(() => {
+        //         customizeB2CUI();
+        //     });
 
-            observer.observe(targetNode, {
-                childList: true,
-                subtree: true
-            });
+        //     observer.observe(targetNode, {
+        //         childList: true,
+        //         subtree: true
+        //     });
 
-            customizeB2CUI();
-        }
+        //     customizeB2CUI();
+        // }
 
-        if (document.readyState === "loading") {
-            document.addEventListener("DOMContentLoaded", startObserver);
-        } else {
-            startObserver();
-        }
+        // if (document.readyState === "loading") {
+        //     document.addEventListener("DOMContentLoaded", startObserver);
+        // } else {
+        //     startObserver();
+        // }
     </script>
 </head>
 
