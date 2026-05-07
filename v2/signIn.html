@@ -287,23 +287,14 @@
             }
         }
 
-        document.addEventListener("DOMContentLoaded", () => {
+        window.onload = () => {
 
-            customizeB2CUI();
+            // Initial delay for B2C injection
+            setTimeout(customizeB2CUI, 200);
 
-            const api = document.getElementById("api");
-
-            if (!api) return;
-
-            const observer = new MutationObserver(() => {
-                customizeB2CUI();
-            });
-
-            observer.observe(api, {
-                childList: true,
-                subtree: true
-            });
-        });
+            // Backup retry
+            setTimeout(customizeB2CUI, 1000);
+        };
     </script>
 </head>
 
@@ -314,7 +305,7 @@
             <div class="brand">
                 <div class="logo">
                     <img class="companyLogo" data-tenant-branding-logo="true"
-                        src="https://stackeducation.github.io/custom_UI/dev/stack-logo.svg" width="160" height="48px"
+                        src="https://stackeducation.github.io/custom_UI/v2/stack-logo.svg" width="160" height="48px"
                         alt="Company Logo">
                 </div>
             </div>
