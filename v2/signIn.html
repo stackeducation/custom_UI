@@ -255,8 +255,24 @@
         }
     </style>
     <script defer>
+        setTimeout(() => {
+            document.querySelector('.heading h1').textContent = "";
+            const forgotPasswordLink = document.getElementById('forgotPassword');
+            const signInButton = document.getElementById('next');
+            if (forgotPasswordLink) {
+                forgotPasswordLink.textContent = 'Forgot Password?'; 
+            }
+        }, 200);
         function customizeB2CUI() {
-            const b2cHeading = document.querySelector("#api .heading");
+
+            // document.querySelector('.heading h1').textContent = "Login";
+            const forgotPasswordLink = document.getElementById('forgotPassword');
+            const signInButton = document.getElementById('next');
+            if (forgotPasswordLink) {
+                forgotPasswordLink.textContent = 'Forgot Password?'; 
+            }
+
+            const b2cHeading = document.querySelector(".heading");
 
             if (b2cHeading) {
                 b2cHeading.style.display = "none";
@@ -287,14 +303,23 @@
             }
         }
 
-        window.onload = () => {
+        document.addEventListener("DOMContentLoaded", () => {
 
-            // Initial delay for B2C injection
-            setTimeout(customizeB2CUI, 200);
+            customizeB2CUI();
 
-            // Backup retry
-            setTimeout(customizeB2CUI, 1000);
-        };
+            const api = document.getElementById("api");
+
+            if (!api) return;
+
+            const observer = new MutationObserver(() => {
+                customizeB2CUI();
+            });
+
+            observer.observe(api, {
+                childList: true,
+                subtree: true
+            });
+        });
     </script>
 </head>
 
