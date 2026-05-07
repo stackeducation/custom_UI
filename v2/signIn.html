@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -50,6 +51,7 @@
         .page {
             display: flex;
             justify-content: center;
+            padding: 100px 20px;
         }
 
         .card {
@@ -253,68 +255,55 @@
         }
     </style>
     <script defer>
-        // function customizeB2CUI() {
-        //     const b2cHeading = document.querySelector("#api .heading");
+        function customizeB2CUI() {
+            const b2cHeading = document.querySelector("#api .heading");
 
-        //     if (b2cHeading) {
-        //         b2cHeading.style.display = "none";
-        //     }
+            if (b2cHeading) {
+                b2cHeading.style.display = "none";
+            }
 
-        //     const intro = document.querySelector(".intro");
+            const intro = document.querySelector(".intro");
 
-        //     if (intro) {
-        //         intro.style.display = "none";
-        //     }
+            if (intro) {
+                intro.style.display = "none";
+            }
 
-        //     const signInButton = document.getElementById("next");
+            const forgotPassword = document.getElementById("forgotPassword");
 
-        //     if (signInButton) {
-        //         signInButton.textContent = "SIGN IN";
-        //     }
+            if (forgotPassword) {
+                forgotPassword.textContent = "Forgot password?";
+            }
 
-        //     const forgotPassword = document.getElementById("forgotPassword");
+            const emailInput = document.getElementById("email");
 
-        //     if (forgotPassword) {
-        //         forgotPassword.textContent = "Forgot password?";
-        //     }
+            if (emailInput) {
+                emailInput.placeholder = "Enter your email";
+            }
 
-        //     const emailInput = document.getElementById("email");
+            const passwordInput = document.getElementById("password");
 
-        //     if (emailInput) {
-        //         emailInput.placeholder = "Enter your email";
-        //     }
+            if (passwordInput) {
+                passwordInput.placeholder = "Enter Password";
+            }
+        }
 
-        //     const passwordInput = document.getElementById("password");
+        document.addEventListener("DOMContentLoaded", () => {
 
-        //     if (passwordInput) {
-        //         passwordInput.placeholder = "Enter Password";
-        //     }
-        // }
+            customizeB2CUI();
 
-        // function startObserver() {
-        //     const targetNode = document.body || document.documentElement;
+            const api = document.getElementById("api");
 
-        //     if (!targetNode) {
-        //         return;
-        //     }
+            if (!api) return;
 
-        //     const observer = new MutationObserver(() => {
-        //         customizeB2CUI();
-        //     });
+            const observer = new MutationObserver(() => {
+                customizeB2CUI();
+            });
 
-        //     observer.observe(targetNode, {
-        //         childList: true,
-        //         subtree: true
-        //     });
-
-        //     customizeB2CUI();
-        // }
-
-        // if (document.readyState === "loading") {
-        //     document.addEventListener("DOMContentLoaded", startObserver);
-        // } else {
-        //     startObserver();
-        // }
+            observer.observe(api, {
+                childList: true,
+                subtree: true
+            });
+        });
     </script>
 </head>
 
@@ -324,20 +313,9 @@
 
             <div class="brand">
                 <div class="logo">
-                    <svg class="logo-icon" viewBox="0 0 32 32" fill="none">
-                        <path d="M16 2L30 16L16 30L2 16L16 2Z"
-                            stroke="#F5A631"
-                            stroke-width="2" />
-
-                        <path d="M16 6.5L25.5 16L16 25.5L6.5 16L16 6.5Z"
-                            stroke="#F5A631"
-                            stroke-width="2" />
-                    </svg>
-
-                    <div>
-                        <div class="logo-title">incline</div>
-                        <div class="logo-subtitle">by STACK education</div>
-                    </div>
+                    <img class="companyLogo" data-tenant-branding-logo="true"
+                        src="https://stackeducation.github.io/custom_UI/dev/stack-logo.svg" width="160" height="48px"
+                        alt="Company Logo">
                 </div>
             </div>
 
@@ -347,7 +325,8 @@
             </div>
 
             <div class="form-wrapper">
-                <div id="api"></div>
+                <div id="api">
+                </div>
             </div>
 
         </section>
@@ -357,4 +336,5 @@
         © 2026 Stack AI, Inc.
     </footer>
 </body>
+
 </html>
