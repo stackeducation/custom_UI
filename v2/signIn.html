@@ -1,284 +1,51 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Sign In</title>
-    <style>
-        :root {
-            --page-bg: #f8f7f5;
-            --card-bg: #ffffff;
-            --card-border: #f5a631;
-            --text-primary: #111111;
-            --text-secondary: #3c372f;
-            --text-tertiary: #6b6560;
-            --text-disabled: #a3a3a3;
-            --navy: #094074;
-            --input-border: #c8c5be;
-        }
 
-        * {
-            box-sizing: border-box;
-        }
+    <link rel="stylesheet" href="signIn.css" />
+    <script defer src="signIn.js"></script>
+</head>
 
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: "Inter", "DM Sans", "Segoe UI", Arial, sans-serif;
-            font-size: 14px;
-            font-weight: 400;
-            line-height: 1.42857143;
-            color: var(--text-primary);
-            background: var(--page-bg);
-        }
-
-        .page {
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 32px 20px 64px;
-        }
-
-        .card {
-            width: 565px;
-            max-width: 92vw;
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 16px;
-            box-shadow: 0 0 20.5714px rgba(245, 166, 49, 0.12);
-            padding: 56px;
-            display: flex;
-            flex-direction: column;
-            gap: 32px;
-        }
-
-        .brand {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 40px;
-        }
-
-        .logo {
-            display: inline-flex;
-            align-items: center;
-            gap: 12px;
-            height: 48px;
-        }
-
-        .logo-icon {
-            width: 32px;
-            height: 32px;
-        }
-
-        .logo-title {
-            font-family: "DM Sans", "Inter", sans-serif;
-            font-size: 27.81px;
-            font-weight: 500;
-            letter-spacing: -0.56px;
-            color: #6e736f;
-            line-height: 1;
-            text-transform: lowercase;
-        }
-
-        .logo-subtitle {
-            font-family: "DM Sans", "Inter", sans-serif;
-            font-size: 12.64px;
-            color: #6e736f;
-            line-height: 1.1;
-        }
-
-        .heading {
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
-
-        .heading h1 {
-            margin: 0;
-            font-size: 20px;
-            font-weight: 500;
-            color: var(--text-secondary);
-            text-transform: lowercase;
-        }
-
-        .heading p {
-            margin: 0;
-            font-size: 12px;
-            color: var(--text-tertiary);
-        }
-
-        .form-wrapper {
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            gap: 24px;
-        }
-
-        .footer {
-            text-align: center;
-            color: var(--text-disabled);
-            font-size: 12px;
-            margin-top: 24px;
-        }
-
-        .extension_tenantName_li,
-        .extension_userRole_li,
-        .extension_documentSources_li,
-        .displayName_li,
-        .extension_displayName_li {
-            display: none;
-        }
-
-        .intro,
-        .divider,
-        .helpLink,
-        .attrEntry .verificationSuccessText,
-        .entry .entry-item .error,
-        .entry .working,
-        .verifying-modal {
-            display: none !important;
-        }
-
-        #api {
-            width: 100%;
-        }
-
-        #attributeList ul,
-        .entry,
-        #localAccountForm .entry .entry-item {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-            margin: 0;
-            padding: 0;
-            width: 100%;
-        }
-
-        #attributeList ul li,
-        #localAccountForm .entry .entry-item {
-            list-style: none;
-            margin: 0;
-        }
-
-        #attributeList ul li label,
-        #localAccountForm .entry .entry-item label {
-            font-size: 14px;
-            font-weight: 400;
-            color: var(--text-primary);
-        }
-
-        #attributeList ul li input,
-        .entry-item input {
-            width: 100%;
-            height: 40px;
-            border: 1px solid var(--input-border);
-            border-radius: 4px;
-            padding: 0 12px;
-            color: var(--text-primary);
-            font-size: 16px;
-        }
-
-        #attributeList ul li input::placeholder,
-        .entry-item input::placeholder {
-            color: var(--text-disabled);
-        }
-
-        #localAccountForm .error,
-        #api #attributeVerification .error {
-            color: #b00;
-            text-align: left;
-            margin: 0;
-        }
-
-        #forgotPassword,
-        .forgot-password a {
-            color: var(--navy);
-            font-size: 14px;
-            font-weight: 500;
-            text-decoration: none;
-            display: inline-block;
-            margin-top: 4px;
-            text-align: right;
-            width: 100%;
-        }
-
-        .buttons {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin-top: 16px;
-        }
-
-        .buttons #cancel {
-            display: none;
-        }
-
-        .buttons button:not([aria-disabled=true]) {
-            opacity: 1;
-        }
-
-        .buttons button {
-            width: 100%;
-            height: 48px;
-            background-color: var(--navy);
-            border-radius: 6px;
-            border: none;
-            outline: none;
-            color: #fff;
-            font-size: 16px;
-            font-weight: 500;
-            cursor: pointer;
-            text-transform: uppercase;
-        }
-
-        @media (max-width: 600px) {
-            .card {
-                padding: 40px 24px;
-            }
-        }
-    </style>
-    <script defer>
-        setTimeout(() => {
-            document.querySelector('.heading h1').textContent = "Login";
-            const forgotPasswordLink = document.getElementById('forgotPassword');
-            const signInButton = document.getElementById('next');
-            if (forgotPasswordLink) {
-                forgotPasswordLink.textContent = 'Forgot Password?'; 
-            }
-            if (signInButton) {
-                console.log("Found:", signInButton.textContent);
-                signInButton.textContent = 'Login';
-            }
-        }, 200);
-      </script>
-</head>  
 <body>
-    <main class="page" role="presentation">
-        <section class="card" aria-label="Sign in">
+    <main class="page">
+        <section class="card">
+
             <div class="brand">
-                <div class="logo" aria-label="Incline by STACK education">
-                    <svg class="logo-icon" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                        <path d="M16 2L30 16L16 30L2 16L16 2Z" stroke="#F5A631" stroke-width="2" />
-                        <path d="M16 6.5L25.5 16L16 25.5L6.5 16L16 6.5Z" stroke="#F5A631" stroke-width="2" />
+                <div class="logo">
+                    <svg class="logo-icon" viewBox="0 0 32 32" fill="none">
+                        <path d="M16 2L30 16L16 30L2 16L16 2Z"
+                            stroke="#F5A631"
+                            stroke-width="2" />
+
+                        <path d="M16 6.5L25.5 16L16 25.5L6.5 16L16 6.5Z"
+                            stroke="#F5A631"
+                            stroke-width="2" />
                     </svg>
+
                     <div>
                         <div class="logo-title">incline</div>
                         <div class="logo-subtitle">by STACK education</div>
                     </div>
                 </div>
-                <div class="heading">
-                    <h1>welcome back</h1>
-                    <p>Sign in to incline</p>
-                </div>
             </div>
+
+            <div class="custom-heading">
+                <h1>Welcome back</h1>
+                <p>Sign in to incline</p>
+            </div>
+
             <div class="form-wrapper">
-                <div id="api" data-name="SelfAsserted" role="main"></div>
+                <div id="api"></div>
             </div>
+
         </section>
     </main>
-    <div class="footer">© 2026 Stack AI, Inc.</div>
-    </body>
+
+    <footer class="footer">
+        © 2026 Stack AI, Inc.
+    </footer>
+</body>
 </html>
