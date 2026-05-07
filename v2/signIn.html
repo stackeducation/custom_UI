@@ -260,36 +260,21 @@
             const forgotPasswordLink = document.getElementById('forgotPassword');
             const signInButton = document.getElementById('next');
             if (forgotPasswordLink) {
-                forgotPasswordLink.textContent = 'Forgot Password?'; 
+                forgotPasswordLink.textContent = 'Forgot Password?';
             }
         }, 200);
         function customizeB2CUI() {
-
-            // document.querySelector('.heading h1').textContent = "Login";
-            const forgotPasswordLink = document.getElementById('forgotPassword');
-            const signInButton = document.getElementById('next');
-            if (forgotPasswordLink) {
-                forgotPasswordLink.textContent = 'Forgot Password?'; 
-            }
-
-            const b2cHeading = document.querySelector(".heading");
-
+            const b2cHeading = document.querySelector('.heading h1').textContent = "";
+            
             if (b2cHeading) {
                 b2cHeading.style.display = "none";
             }
+            const forgotPasswordLink = document.getElementById('forgotPassword');
 
-            const intro = document.querySelector(".intro");
-
-            if (intro) {
-                intro.style.display = "none";
+            const signInButton = document.getElementById('next');
+            if (forgotPasswordLink) {
+                forgotPasswordLink.textContent = 'Forgot Password?';
             }
-
-            const forgotPassword = document.getElementById("forgotPassword");
-
-            if (forgotPassword) {
-                forgotPassword.textContent = "Forgot password?";
-            }
-
             const emailInput = document.getElementById("email");
 
             if (emailInput) {
@@ -303,23 +288,9 @@
             }
         }
 
-        document.addEventListener("DOMContentLoaded", () => {
-
-            customizeB2CUI();
-
-            const api = document.getElementById("api");
-
-            if (!api) return;
-
-            const observer = new MutationObserver(() => {
-                customizeB2CUI();
-            });
-
-            observer.observe(api, {
-                childList: true,
-                subtree: true
-            });
-        });
+        setTimeout(customizeB2CUI, 0);
+        // Backup retry
+        setTimeout(customizeB2CUI, 200);
     </script>
 </head>
 
