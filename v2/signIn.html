@@ -147,6 +147,7 @@
         }
 
         .intro,
+        .heading,
         .divider,
         .helpLink,
         .attrEntry .verificationSuccessText,
@@ -165,7 +166,7 @@
         #localAccountForm .entry .entry-item {
             display: flex;
             flex-direction: column;
-            gap: 16px;
+            gap: 8px;
             margin: 0;
             padding: 0;
             width: 100%;
@@ -256,11 +257,6 @@
     </style>
     <script defer>
         function customizeB2CUI() {
-            const b2cHeading = document.querySelector('.heading h1').textContent = "";
-            
-            if (b2cHeading) {
-                b2cHeading.style.display = "none";
-            }
             const forgotPasswordLink = document.getElementById('forgotPassword');
 
             const signInButton = document.getElementById('next');
