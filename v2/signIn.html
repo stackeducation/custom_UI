@@ -51,6 +51,7 @@
         .page {
             display: flex;
             justify-content: center;
+            padding: 100px 20px;
         }
 
         .card {
@@ -312,16 +313,9 @@
 
             <div class="brand">
                 <div class="logo">
-                    <svg class="logo-icon" viewBox="0 0 32 32" fill="none">
-                        <path d="M16 2L30 16L16 30L2 16L16 2Z" stroke="#F5A631" stroke-width="2" />
-
-                        <path d="M16 6.5L25.5 16L16 25.5L6.5 16L16 6.5Z" stroke="#F5A631" stroke-width="2" />
-                    </svg>
-
-                    <div>
-                        <div class="logo-title">incline</div>
-                        <div class="logo-subtitle">by STACK education</div>
-                    </div>
+                    <img class="companyLogo" data-tenant-branding-logo="true"
+                        src="https://stackeducation.github.io/custom_UI/dev/stack-logo.svg" width="160" height="48px"
+                        alt="Company Logo">
                 </div>
             </div>
 
@@ -331,7 +325,42 @@
             </div>
 
             <div class="form-wrapper">
-                <div id="api"></div>
+                <div id="api" data-name="SelfAsserted" role="main">
+                    <div class="heading">
+                        <h1 role="heading">Sign in</h1>
+                    </div>
+                    <form id="localAccountForm" class="localAccount" aria-label="Sign in with your email address">
+                        <div class="intro">
+                            <h2> Sign in with your email address </h2>
+                        </div>
+                        <div class="error pageLevel" aria-hidden="true" role="alert">
+                            <p></p>
+                        </div>
+                        <div class="entry">
+                            <div class="entry-item"> <label for="email"> Email Address </label>
+                                <div class="error itemLevel" aria-hidden="true" role="alert">
+                                    <p></p>
+                                </div> <input type="email" id="email" name="Email Address"
+                                    title="Please enter a valid email address"
+                                    pattern="^[a-zA-Z0-9!#$%&amp;'+^_{}~-]+(?:\.[a-zA-Z0-9!#$%&amp;'+^_{}~-]+)*@(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?\.)+[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?$"
+                                    autofocus="" placeholder="Email Address" aria-label="Email Address">
+                            </div>
+                            <div class="entry-item">
+                                <div class="password-label"> <label for="password">Password</label> <a
+                                        id="forgotPassword"
+                                        href="/stackhealthtest.onmicrosoft.com/B2C_1_SignIn/api/CombinedSigninAndSignup/unified?claimsexchange=ForgotPassword&amp;csrf_token=QUNsU01IYnB0U0FyUklZYTNUdEViU1Q1engxam9vSS9OcHR3Uk8zV3VPM3pjZlVZMGcrVW91VmxMRWhNL1VOdHc1SEZWdmdxT2VZT1ZweWZJR1kzUGc9PTsyMDI2LTA1LTA3VDA3OjM3OjQ2LjMxODE1OVoR0xwUHI4QT09O3siT3JjaGVzdHJhdGlvblN0ZXAiOjF9&amp;tx=StateProperties=eyJUSUQiOiI1MWwMy1iYzk3MTM0ZDE2MjEifQ&amp;p=B2C_1_SignIn">Forgot
+                                        Password?</a> </div>
+                                <div class="error itemLevel" aria-hidden="true">
+                                    <p role="alert"></p>
+                                </div> <input type="password" id="password" name="Password" placeholder="Password"
+                                    aria-label="Password" autocomplete="current-password" aria-required="true">
+                            </div>
+                            <div class="working"></div>
+                            <div class="buttons"> <button id="next" type="submit" form="localAccountForm">Login</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
             </div>
 
         </section>
