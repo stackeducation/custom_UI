@@ -99,18 +99,10 @@ document.addEventListener('DOMContentLoaded', function() {
         const verifyButton = document.getElementById('verifyButton');
         const resendLink = document.getElementById('resendLink');
         const cancelButton = document.getElementById('cancelButton');
-        const emailInfo = document.getElementById('emailInfo');
-        const userEmailElement = document.getElementById('userEmail');
-        const editEmail = document.getElementById('editEmail');
         
-        // Show email info if available
-        if (emailInfo && userEmailElement) {
-            const storedEmail = sessionStorage.getItem('forgotPasswordEmail') || userEmail;
-            if (storedEmail) {
-                userEmailElement.textContent = storedEmail;
-                userEmail = storedEmail;
-                emailInfo.style.display = 'flex';
-            }
+        // Update cancel button text for verification step
+        if (cancelButton) {
+            cancelButton.textContent = 'Back to Sign in';
         }
         
         // Auto-focus first input
@@ -191,7 +183,6 @@ document.addEventListener('DOMContentLoaded', function() {
             resendLink.addEventListener('click', function(e) {
                 e.preventDefault();
                 console.log('Resending code...');
-                alert('Verification code resent to your email');
                 
                 // Clear inputs and reset
                 codeInputs.forEach(input => {
@@ -228,6 +219,11 @@ document.addEventListener('DOMContentLoaded', function() {
         const confirmPasswordInput = document.getElementById('confirmPassword');
         const resetButton = document.getElementById('resetButton');
         const cancelButton = document.getElementById('cancelButton');
+        
+        // Update cancel button text for reset step
+        if (cancelButton) {
+            cancelButton.textContent = 'Back to Sign in';
+        }
         
         // Password requirements elements
         const lengthReq = document.getElementById('length');
