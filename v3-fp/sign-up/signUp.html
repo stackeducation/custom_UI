@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Forgot Password</title>
+    <title>Sign Up</title>
     <style>
         :root {
             --page-bg: #F8F7F5;
@@ -59,45 +59,31 @@
 
         .card {
             position: relative;
-
             width: 565px;
             max-width: 92vw;
-
             padding: 56px;
-
             border-radius: 16px;
-
             display: flex;
             flex-direction: column;
             gap: 32px;
-
             background:
                 linear-gradient(var(--card-bg), var(--card-bg)) padding-box,
-
                 conic-gradient(from var(--border-angle),
-
                     transparent 0deg,
                     transparent 220deg,
-
                     rgba(245, 166, 49, 0.12) 250deg,
                     rgba(255, 208, 137, 0.45) 270deg,
                     #fff4df 285deg,
                     var(--card-border-light) 300deg,
                     var(--card-border) 320deg,
                     var(--card-border) 340deg,
-
                     rgba(245, 166, 49, 0.25) 350deg,
                     transparent 360deg) border-box;
-
             border: 1.5px solid transparent;
-
-            box-shadow:
-                0 0 20.5714px rgba(245, 166, 49, 0.12);
-
+            box-shadow: 0 0 20.5714px rgba(245, 166, 49, 0.12);
             animation: border-angle-rotate 5s linear infinite;
         }
 
-        /* Smooth animated CSS variable */
         @property --border-angle {
             syntax: "<angle>";
             initial-value: 0deg;
@@ -245,9 +231,9 @@
         .buttons {
             display: flex;
             flex-direction: column;
-            gap: 24px;
             align-items: center;
-            margin-top: 10px;
+            gap: 24px;
+            margin-top: 48px;
         }
 
         .buttons button {
@@ -271,28 +257,7 @@
         }
 
         .buttons #cancel {
-            width: auto;
-            height: auto;
-            padding: 0;
-            background: none;
-            border: none;
-            color: var(--navy);
-            font-size: 16px;
-            font-weight: 500;
-            text-transform: none;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            cursor: pointer;
-        }
-
-        .buttons #cancel::before {
-            content: "";
-            width: 16px;
-            height: 16px;
-            display: inline-block;
-            background: no-repeat center / contain url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='16'%20height='16'%20viewBox='0%200%2024%2024'%20fill='none'%3E%3Cpath%20d='M20%2012H5'%20stroke='%23094074'%20stroke-width='2'%20stroke-linecap='round'/%3E%3Cpath%20d='M12%2019L5%2012L12%205'%20stroke='%23094074'%20stroke-width='2'%20stroke-linecap='round'%20stroke-linejoin='round'/%3E%3C/svg%3E");
+            display: none;
         }
 
         @media (max-width: 600px) {
@@ -303,39 +268,11 @@
     </style>
     <script defer>
         setTimeout(() => {
-            // Update heading
-            const heading = document.querySelector('.heading h1');
-            if (heading) {
-                heading.textContent = "Forgot Password?";
+            const signUpButton = document.getElementById('continue');
+            if (signUpButton) {
+                signUpButton.textContent = 'Sign Up';
             }
-            
-            // Hide continue button
-            const continueButton = document.getElementById('continue');
-            if (continueButton) {
-                continueButton.style.display = 'none';
-            }
-            
-            // Update send verification button text and add redirect
-            const sendButton = document.querySelector('button[aria-label="Send verification code"]');
-            if (sendButton) {
-                sendButton.textContent = 'Send verification code';
-                sendButton.onclick = function(e) {
-                    e.preventDefault();
-                    // Store email if needed
-                    const emailInput = document.getElementById('email');
-                    if (emailInput && emailInput.value) {
-                        sessionStorage.setItem('forgotPasswordEmail', emailInput.value);
-                    }
-                    // Redirect to verification page
-                    window.location.href = '../v3-fp/forgot-password/verify.html';
-                };
-            }
-            
-            // Update cancel button
-            const cancelButton = document.getElementById('cancel');
-            if (cancelButton) {
-                cancelButton.textContent = 'Back to Sign in';
-            }
+            document.querySelector('.heading h1').textContent = "Create Account";
         }, 100);
     </script>
 </head>
@@ -350,8 +287,8 @@
                         alt="Company Logo">
                 </div>
                 <div class="custom-heading">
-                    <h1>forgot your password?</h1>
-                    <p>verify your email to reset the password</p>
+                    <h1>create account</h1>
+                    <p>Start researching with incline today</p>
                 </div>
             </div>
 
