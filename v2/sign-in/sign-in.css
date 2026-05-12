@@ -241,6 +241,22 @@ body {
     font-size: 16px;
 }
 
+#attributeList ul li input:-webkit-autofill,
+#attributeList ul li input:-webkit-autofill:hover,
+#attributeList ul li input:-webkit-autofill:focus,
+#attributeList ul li input:-webkit-autofill:active,
+.entry-item input:-webkit-autofill,
+.entry-item input:-webkit-autofill:hover,
+.entry-item input:-webkit-autofill:focus,
+.entry-item input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 1000px #ffffff inset !important;
+    box-shadow: 0 0 0 1000px #ffffff inset !important;
+    -webkit-text-fill-color: var(--text-primary) !important;
+    font-size: 16px !important;
+    transition: background-color 9999s ease-in-out 0s;
+    border-radius: 4px;
+}
+
 .password-field {
     position: relative;
     width: 100%;
