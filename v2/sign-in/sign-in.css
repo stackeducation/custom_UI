@@ -10,6 +10,7 @@
     --text-disabled: #a3a3a3;
     --navy: #094074;
     --input-border: #c8c5be;
+    --border-default: #E1DFD9;
 }
 
 html::-webkit-scrollbar {
@@ -33,7 +34,7 @@ body {
     font-weight: 400;
     line-height: 1.42857143;
     color: var(--text-primary);
-    background: var(--page-bg);
+    background: var(--page-bg) !important;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
@@ -180,6 +181,7 @@ body {
 .extension_userRole_li,
 .extension_documentSources_li,
 .displayName_li,
+.error.pageLevel,
 .extension_displayName_li {
     display: none;
 }
@@ -191,7 +193,6 @@ body {
 .attrEntry .verificationSuccessText,
 .entry .entry-item .error,
 .entry .working,
-.error.pageLevel,
 .verifying-modal {
     display: none !important;
 }
@@ -211,6 +212,10 @@ body {
     width: 100%;
 }
 
+.entry {
+    gap: 16px;
+}
+
 #attributeList ul li,
 #localAccountForm .entry .entry-item {
     list-style: none;
@@ -222,6 +227,7 @@ body {
     font-size: 14px;
     font-weight: 400;
     color: var(--text-primary);
+    margin: 0;
 }
 
 #attributeList ul li input,
@@ -247,16 +253,18 @@ body {
     margin: 0;
 }
 
-#forgotPassword,
-.forgot-password a {
+.password-label {
+    display: flex;
+    flex-direction: column;
+}
+
+#forgotPassword {
+    align-self: flex-end;
     color: var(--navy);
     font-size: 14px;
     font-weight: 500;
     text-decoration: none;
-    display: inline-block;
-    margin-top: 4px;
-    text-align: right;
-    width: 100%;
+    width: max-content;
 }
 
 .buttons {
@@ -277,15 +285,17 @@ body {
 .buttons button {
     width: 100%;
     height: 48px;
-    background-color: var(--navy);
     border-radius: 6px;
     border: none;
     outline: none;
-    color: #fff;
     font-size: 16px;
     font-weight: 500;
-    cursor: pointer;
     text-transform: uppercase;
+}
+
+#next:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
 }
 
 @media (max-width: 600px) {
