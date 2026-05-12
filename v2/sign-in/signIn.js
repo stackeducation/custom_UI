@@ -25,7 +25,8 @@ function customizeB2CUI() {
         toggleButton.type = "button";
         toggleButton.className = "password-toggle";
         toggleButton.setAttribute("aria-label", "Show password");
-        toggleButton.innerHTML = "<img src='https://stackeducation.github.io/custom_UI/v2/eye-frame.svg' alt='' aria-hidden='true' />";
+        toggleButton.innerHTML =
+            "<img src='https://stackeducation.github.io/custom_UI/v2/eye-open-icon.svg' alt='' aria-hidden='true' />";
 
         passwordInput.parentNode.insertBefore(wrapper, passwordInput);
         wrapper.appendChild(passwordInput);
@@ -35,6 +36,12 @@ function customizeB2CUI() {
             const isHidden = passwordInput.type === "password";
             passwordInput.type = isHidden ? "text" : "password";
             toggleButton.setAttribute("aria-label", isHidden ? "Hide password" : "Show password");
+            const icon = toggleButton.querySelector("img");
+            if (icon) {
+                icon.src = isHidden
+                    ? "https://stackeducation.github.io/custom_UI/v2/eye-closed-icon.svg"
+                    : "https://stackeducation.github.io/custom_UI/v2/eye-open-icon.svg";
+            }
         });
 
         passwordInput.dataset.toggleAttached = "true";
