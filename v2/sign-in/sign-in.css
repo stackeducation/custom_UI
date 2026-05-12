@@ -241,6 +241,37 @@ body {
     font-size: 16px;
 }
 
+.password-field {
+    position: relative;
+    width: 100%;
+}
+
+.password-field input {
+    padding-right: 44px;
+}
+
+.password-toggle {
+    position: absolute;
+    top: 50%;
+    right: 8px;
+    width: 24px;
+    height: 24px;
+    transform: translateY(-50%);
+    border: none;
+    border-radius: 4px;
+    background: #ffffff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    cursor: pointer;
+}
+
+.password-toggle svg {
+    width: 16px;
+    height: 16px;
+}
+
 #attributeList ul li input::placeholder,
 .entry-item input::placeholder {
     color: var(--text-disabled);

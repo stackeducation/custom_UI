@@ -17,6 +17,29 @@ function customizeB2CUI() {
         passwordInput.placeholder = "Enter Password";
     }
 
+    if (passwordInput && !passwordInput.dataset.toggleAttached) {
+        const wrapper = document.createElement("div");
+        wrapper.className = "password-field";
+
+        const toggleButton = document.createElement("button");
+        toggleButton.type = "button";
+        toggleButton.className = "password-toggle";
+        toggleButton.setAttribute("aria-label", "Show password");
+        toggleButton.innerHTML = "<img src='https://stackeducation.github.io/custom_UI/v2/eye-frame.svg' alt='' aria-hidden='true' />";
+
+        passwordInput.parentNode.insertBefore(wrapper, passwordInput);
+        wrapper.appendChild(passwordInput);
+        wrapper.appendChild(toggleButton);
+
+        toggleButton.addEventListener("click", () => {
+            const isHidden = passwordInput.type === "password";
+            passwordInput.type = isHidden ? "text" : "password";
+            toggleButton.setAttribute("aria-label", isHidden ? "Hide password" : "Show password");
+        });
+
+        passwordInput.dataset.toggleAttached = "true";
+    }
+
     const updateButtonState = () => {
         if (!signInButton || !emailInput || !passwordInput) {
             return;
