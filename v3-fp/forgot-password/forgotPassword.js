@@ -86,7 +86,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 };
             }
             
-            // Update cancel button
+            // Update cancel button text
             const cancelButton = document.getElementById('cancel');
             if (cancelButton) {
                 cancelButton.textContent = 'Back to Sign in';
