@@ -21,6 +21,43 @@ function customizeB2CUI() {
         resendCodeButton.textContent = "Resend code";
     }
 
+    const attachPasswordToggle = (input) => {
+        if (!input || input.dataset.toggleAttached) {
+            return;
+        }
+
+        const wrapper = document.createElement("div");
+        wrapper.className = "password-field";
+
+        const toggleButton = document.createElement("button");
+        toggleButton.type = "button";
+        toggleButton.className = "password-toggle";
+        toggleButton.setAttribute("aria-label", "Show password");
+        toggleButton.innerHTML =
+            "<img src='https://stackeducation.github.io/custom_UI/v2/eye-open-icon.svg' alt='' aria-hidden='true' />";
+
+        input.parentNode.insertBefore(wrapper, input);
+        wrapper.appendChild(input);
+        wrapper.appendChild(toggleButton);
+
+        toggleButton.addEventListener("click", () => {
+            const isHidden = input.type === "password";
+            input.type = isHidden ? "text" : "password";
+            toggleButton.setAttribute("aria-label", isHidden ? "Hide password" : "Show password");
+            const icon = toggleButton.querySelector("img");
+            if (icon) {
+                icon.src = isHidden
+                    ? "https://stackeducation.github.io/custom_UI/v2/eye-closed-icon.svg"
+                    : "https://stackeducation.github.io/custom_UI/v2/eye-open-icon.svg";
+            }
+        });
+
+        input.dataset.toggleAttached = "true";
+    };
+
+    attachPasswordToggle(newPasswordInput);
+    attachPasswordToggle(confirmPasswordInput);
+
     const setButtonState = (button, enabled) => {
         if (!button) {
             return;
