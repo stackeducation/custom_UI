@@ -83,6 +83,11 @@ function customizeB2CUI() {
         button.style.backgroundColor = enabled ? "#094074" : "#E1DFD9";
         button.style.color = enabled ? "#FFFFFF" : "#a3a3a3";
         button.style.cursor = enabled ? "pointer" : "not-allowed";
+
+        const resendRow = button.closest(".resend-row");
+        if (resendRow) {
+            resendRow.style.display = enabled ? "flex" : "none";
+        }
     };
 
     const updateButtonState = () => {
