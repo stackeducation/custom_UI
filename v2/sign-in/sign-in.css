@@ -340,12 +340,6 @@ body {
     text-transform: uppercase;
 }
 
-.sendNewCode {
-    background: var(--navy);
-    color: #ffffff;
-    cursor: pointer;
-}
-
 #next:disabled {
   cursor: not-allowed;
   opacity: 0.6;

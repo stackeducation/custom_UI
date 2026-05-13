@@ -250,7 +250,13 @@ body {
     text-transform: uppercase;
 }
 
-.buttons:has(#continue):has(#cancel) {
+.sendNewCode, .changeClaims {
+    background: var(--navy);
+    color: #ffffff;
+    cursor: pointer;
+}
+
+#cancel {
   display: none;
 }
 

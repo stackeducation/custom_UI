@@ -7,6 +7,8 @@ function customizeB2CUI() {
 
     const emailInput = document.getElementById("email");
     const verificationCodeInput = document.getElementById("emailVerificationCode");
+    const newPasswordInput = document.getElementById("newPassword");
+    const confirmPasswordInput = document.getElementById("reenterPassword");
     const sendCodeButton = document.getElementById("emailVerificationControl_but_send_code");
     const verifyCodeButton = document.getElementById("emailVerificationControl_but_verify_code");
     const resendCodeButton = document.getElementById("emailVerificationControl_but_send_new_code");
@@ -36,8 +38,12 @@ function customizeB2CUI() {
         }
         const hasEmail = emailInput.value.trim() !== "";
         const hasCode = verificationCodeInput && verificationCodeInput.value.trim() !== "";
+        const hasPasswords = newPasswordInput && confirmPasswordInput
+            ? newPasswordInput.value.trim() !== "" && confirmPasswordInput.value.trim() !== ""
+            : false;
         setButtonState(sendCodeButton, hasEmail);
         setButtonState(verifyCodeButton, hasCode);
+        setButtonState(signUpButton, hasPasswords);
     };
 
     const attachInputListener = (input) => {
@@ -51,6 +57,8 @@ function customizeB2CUI() {
 
     attachInputListener(emailInput);
     attachInputListener(verificationCodeInput);
+    attachInputListener(newPasswordInput);
+    attachInputListener(confirmPasswordInput);
     updateButtonState();
 }
 
