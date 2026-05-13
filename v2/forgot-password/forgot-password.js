@@ -78,10 +78,11 @@ function customizeB2CUI() {
         const changeClaimsVisible = changeClaimsButton
             ? getComputedStyle(changeClaimsButton).display !== "none"
             : false;
+
+        console.log("test", getComputedStyle(changeClaimsButton).display)
         setButtonState(sendCodeButton, hasEmail);
         setButtonState(verifyCodeButton, hasCode);
-        // setButtonState(continueButton, hasPasswords || changeClaimsVisible);
-        setButtonState(continueButton, true);
+        setButtonState(continueButton, hasPasswords || changeClaimsVisible);
     };
 
     if (emailInput && !emailInput.dataset.stateListenerAttached) {
