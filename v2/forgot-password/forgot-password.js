@@ -7,6 +7,7 @@ function customizeB2CUI() {
     const verifyCodeButton = document.getElementById("emailVerificationControl_but_verify_code");
     const resendCodeButton = document.getElementById("emailVerificationControl_but_send_new_code");
     const continueButton = document.getElementById("continue");
+    const changeClaimsButton = document.getElementById("emailVerificationControl_but_change_claims");
 
     if (verifyCodeButton) {
         verifyCodeButton.textContent = "Verify";
@@ -74,9 +75,12 @@ function customizeB2CUI() {
         const hasPasswords = newPasswordInput && confirmPasswordInput
             ? newPasswordInput.value.trim() !== "" && confirmPasswordInput.value.trim() !== ""
             : false;
+        const changeClaimsVisible = changeClaimsButton
+            ? getComputedStyle(changeClaimsButton).display !== "none"
+            : false;
         setButtonState(sendCodeButton, hasEmail);
         setButtonState(verifyCodeButton, hasCode);
-        setButtonState(continueButton, hasPasswords);
+        setButtonState(continueButton, hasPasswords || changeClaimsVisible);
     };
 
     if (emailInput && !emailInput.dataset.stateListenerAttached) {
