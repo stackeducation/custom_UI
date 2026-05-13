@@ -80,7 +80,8 @@ function customizeB2CUI() {
             : false;
         setButtonState(sendCodeButton, hasEmail);
         setButtonState(verifyCodeButton, hasCode);
-        setButtonState(continueButton, hasPasswords || changeClaimsVisible);
+        // setButtonState(continueButton, hasPasswords || changeClaimsVisible);
+        setButtonState(continueButton, true);
     };
 
     if (emailInput && !emailInput.dataset.stateListenerAttached) {
