@@ -51,14 +51,17 @@ function customizeB2CUI() {
         input.dataset.toggleAttached = "true";
     };
 
-    attachPasswordToggle(newPasswordInput);
-    attachPasswordToggle(confirmPasswordInput);
+    const syncPasswordToggles = () => {
+        attachPasswordToggle(document.getElementById("newPassword"));
+        attachPasswordToggle(document.getElementById("reenterPassword"));
+    };
+
+    syncPasswordToggles();
 
     const setButtonState = (button, enabled) => {
         if (!button) {
             return;
         }
-
         button.disabled = !enabled;
         button.style.backgroundColor = enabled ? "#094074" : "#E1DFD9";
         button.style.color = enabled ? "#FFFFFF" : "#a3a3a3";
@@ -66,18 +69,25 @@ function customizeB2CUI() {
     };
 
     const updateButtonState = () => {
-        if (!emailInput) {
+        const currentEmailInput = document.getElementById("email");
+        const currentVerificationCodeInput = document.getElementById("emailVerificationCode");
+        const currentNewPasswordInput = document.getElementById("newPassword");
+        const currentConfirmPasswordInput = document.getElementById("reenterPassword");
+        const currentChangeClaimsButton = document.getElementById("emailVerificationControl_but_change_claims");
+
+        if (!currentEmailInput && !currentVerificationCodeInput && !currentNewPasswordInput && !currentConfirmPasswordInput && !currentChangeClaimsButton) {
             return;
         }
 
-        const hasEmail = emailInput.value.trim() !== "";
-        const hasCode = verificationCodeInput && verificationCodeInput.value.trim() !== "";
-        const hasPasswords = newPasswordInput && confirmPasswordInput
-            ? newPasswordInput.value.trim() !== "" && confirmPasswordInput.value.trim() !== ""
+        const hasEmail = currentEmailInput?.value.trim() !== "";
+        const hasCode = currentVerificationCodeInput && currentVerificationCodeInput.value.trim() !== "";
+        const hasPasswords = currentNewPasswordInput && currentConfirmPasswordInput
+            ? currentNewPasswordInput.value.trim() !== "" && currentConfirmPasswordInput.value.trim() !== ""
             : false;
-        const changeClaimsVisible = changeClaimsButton
+        const changeClaimsVisible = currentChangeClaimsButton
             ? getComputedStyle(changeClaimsButton).display !== "none"
             : false;
+        syncPasswordToggles();
         setButtonState(sendCodeButton, hasEmail);
         setButtonState(verifyCodeButton, hasCode);
         setButtonState(continueButton, hasPasswords || changeClaimsVisible);
@@ -101,6 +111,11 @@ function customizeB2CUI() {
     if (confirmPasswordInput && !confirmPasswordInput.dataset.stateListenerAttached) {
         confirmPasswordInput.addEventListener("input", updateButtonState);
         confirmPasswordInput.dataset.stateListenerAttached = "true";
+    }
+
+    if (!document.body.dataset.stateListenerAttached) {
+        document.body.addEventListener("input", updateButtonState);
+        document.body.dataset.stateListenerAttached = "true";
     }
 
     if (changeClaimsButton && !changeClaimsButton.dataset.stateObserverAttached) {
