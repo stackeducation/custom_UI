@@ -6,7 +6,18 @@ function customizeB2CUI() {
     
 
     const emailInput = document.getElementById("email");
+    const verificationCodeInput = document.getElementById("emailVerificationCode");
     const sendCodeButton = document.getElementById("emailVerificationControl_but_send_code");
+    const verifyCodeButton = document.getElementById("emailVerificationControl_but_verify_code");
+    const resendCodeButton = document.getElementById("emailVerificationControl_but_send_new_code");
+
+    if (verifyCodeButton) {
+        verifyCodeButton.textContent = "Verify";
+    }
+
+    if (resendCodeButton) {
+        resendCodeButton.textContent = "Resend code";
+    }
 
     const setButtonState = (button, enabled) => {
         if (!button) {
@@ -24,7 +35,9 @@ function customizeB2CUI() {
             return;
         }
         const hasEmail = emailInput.value.trim() !== "";
+        const hasCode = verificationCodeInput && verificationCodeInput.value.trim() !== "";
         setButtonState(sendCodeButton, hasEmail);
+        setButtonState(verifyCodeButton, hasCode);
     };
 
     const attachInputListener = (input) => {
@@ -37,6 +50,7 @@ function customizeB2CUI() {
     };
 
     attachInputListener(emailInput);
+    attachInputListener(verificationCodeInput);
     updateButtonState();
 }
 
