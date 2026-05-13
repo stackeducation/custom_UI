@@ -1,10 +1,4 @@
 function customizeB2CUI() {
-    const signUpButton = document.getElementById('continue');
-    if (signUpButton) {
-        signUpButton.textContent = 'Sign Up';
-    }
-    
-
     const emailInput = document.getElementById("email");
     const sendCodeButton = document.getElementById("emailVerificationControl_but_send_code");
 
@@ -23,21 +17,23 @@ function customizeB2CUI() {
         if (!emailInput) {
             return;
         }
+
         const hasEmail = emailInput.value.trim() !== "";
         setButtonState(sendCodeButton, hasEmail);
     };
 
-    const attachInputListener = (input) => {
-        if (!input || input.dataset.stateListenerAttached) {
-            return;
-        }
+    if (emailInput && !emailInput.dataset.stateListenerAttached) {
+        emailInput.addEventListener("input", updateButtonState);
+        emailInput.dataset.stateListenerAttached = "true";
+    }
 
-        input.addEventListener("input", updateButtonState);
-        input.dataset.stateListenerAttached = "true";
-    };
-
-    attachInputListener(emailInput);
     updateButtonState();
+
+    const cancelBtn = document.getElementById("cancel");
+
+    if (cancelBtn) {
+        cancelBtn.textContent = "Back to Sign in";
+    }
 }
 
 setTimeout(customizeB2CUI, 10);
