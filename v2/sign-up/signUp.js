@@ -21,6 +21,22 @@ function customizeB2CUI() {
         resendCodeButton.textContent = "Resend code";
     }
 
+    if (verifyCodeButton && resendCodeButton && !resendCodeButton.dataset.repositioned) {
+        const resendRow = document.createElement("div");
+        resendRow.className = "resend-row";
+
+        const helperText = document.createElement("span");
+        helperText.className = "resend-helper";
+        helperText.textContent = "Didn't receive the code?";
+
+        resendCodeButton.classList.add("resend-link");
+
+        resendRow.appendChild(helperText);
+        resendRow.appendChild(resendCodeButton);
+        verifyCodeButton.parentNode.insertBefore(resendRow, verifyCodeButton);
+        resendCodeButton.dataset.repositioned = "true";
+    }
+
     const attachPasswordToggle = (input) => {
         if (!input || input.dataset.toggleAttached) {
             return;
