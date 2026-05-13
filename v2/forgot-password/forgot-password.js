@@ -78,8 +78,6 @@ function customizeB2CUI() {
         const changeClaimsVisible = changeClaimsButton
             ? getComputedStyle(changeClaimsButton).display !== "none"
             : false;
-
-        console.log("test", getComputedStyle(changeClaimsButton).display)
         setButtonState(sendCodeButton, hasEmail);
         setButtonState(verifyCodeButton, hasCode);
         setButtonState(continueButton, hasPasswords || changeClaimsVisible);
@@ -103,6 +101,15 @@ function customizeB2CUI() {
     if (confirmPasswordInput && !confirmPasswordInput.dataset.stateListenerAttached) {
         confirmPasswordInput.addEventListener("input", updateButtonState);
         confirmPasswordInput.dataset.stateListenerAttached = "true";
+    }
+
+    if (changeClaimsButton && !changeClaimsButton.dataset.stateObserverAttached) {
+        const observer = new MutationObserver(() => updateButtonState());
+        observer.observe(changeClaimsButton, {
+            attributes: true,
+            attributeFilter: ["style", "class", "aria-hidden"]
+        });
+        changeClaimsButton.dataset.stateObserverAttached = "true";
     }
 
     updateButtonState();
