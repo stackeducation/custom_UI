@@ -85,7 +85,18 @@ function customizeB2CUI() {
 
         const resendRow = button.closest(".resend-row");
         if (resendRow) {
-            resendRow.style.display = enabled ? "flex" : "none";
+            resendRow.style.display = getComputedStyle(button).display === "none" ? "none" : "flex";
+        }
+    };
+
+    const updateResendRowVisibility = () => {
+        if (!resendCodeButton) {
+            return;
+        }
+
+        const resendRow = resendCodeButton.closest(".resend-row");
+        if (resendRow) {
+            resendRow.style.display = getComputedStyle(resendCodeButton).display === "none" ? "none" : "flex";
         }
     };
 
@@ -112,6 +123,7 @@ function customizeB2CUI() {
         setButtonState(sendCodeButton, hasEmail);
         setButtonState(verifyCodeButton, hasCode);
         setButtonState(continueButton, hasPasswords || changeClaimsVisible);
+        updateResendRowVisibility();
     };
 
     if (emailInput && !emailInput.dataset.stateListenerAttached) {
