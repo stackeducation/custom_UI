@@ -1,311 +1,267 @@
-// Single Page Forgot Password Flow
-document.addEventListener('DOMContentLoaded', function() {
-    let verificationCode = ['', '', '', '', '', ''];
-    let userEmail = '';
-    let currentStep = 'email'; // email, verify, reset
-    
-    // Get URL parameters to determine initial step
-    const urlParams = new URLSearchParams(window.location.search);
-    const stepParam = urlParams.get('step');
-    if (stepParam && ['email', 'verify', 'reset'].includes(stepParam)) {
-        currentStep = stepParam;
+// Multi-step forgot password form
+class ForgotPasswordForm {
+    constructor() {
+        this.currentPage = 1;
+        this.userEmail = "";
+        this.init();
     }
-    
-    // Show the appropriate step
-    showStep(currentStep);
-    
-    function showStep(step) {
-        // Hide all steps
-        document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
-        
-        // Show current step
-        const currentStepElement = document.getElementById(`${step}-step`);
-        if (currentStepElement) {
-            currentStepElement.classList.add('active');
-        }
-        
-        // Update heading and description
-        const headingElement = document.getElementById('page-heading');
-        const descElement = document.getElementById('page-description');
-        
-        switch(step) {
-            case 'email':
-                headingElement.textContent = 'forgot your password?';
-                descElement.textContent = 'verify your email to reset the password';
-                initializeEmailStep();
-                break;
-            case 'verify':
-                headingElement.textContent = 'verify email';
-                descElement.textContent = 'enter the 6-digit code sent to your email';
-                initializeVerificationStep();
-                break;
-            case 'reset':
-                headingElement.textContent = 'reset password';
-                descElement.textContent = 'enter your new password';
-                initializeResetStep();
-                break;
-        }
-        
-        currentStep = step;
+
+    init() {
+        this.setupEventListeners();
+        this.showPage(1);
     }
-    
-    function initializeEmailStep() {
-        setTimeout(() => {
-            // Hide continue button
-            const continueButton = document.getElementById('continue');
-            if (continueButton) {
-                continueButton.style.display = 'none';
-            }
-            
-            // Update send verification button
-            const sendButton = document.querySelector('button[aria-label="Send verification code"]') || 
-                              document.querySelector('button:not([aria-disabled])');
-            if (sendButton) {
-                sendButton.textContent = 'SEND VERIFICATION CODE';
-                sendButton.onclick = function(e) {
+
+    setupEventListeners() {
+        // Page 1 - Email Entry
+        const emailInput = document.getElementById("emailInput");
+        const sendCodeBtn = document.getElementById("sendCodeBtn");
+        const cancelBtn1 = document.getElementById("cancelBtn1");
+
+        if (emailInput) {
+            emailInput.addEventListener("input", () => this.updatePage1ButtonState());
+        }
+
+        if (sendCodeBtn) {
+            sendCodeBtn.addEventListener("click", () => this.handleSendCode());
+        }
+
+        if (cancelBtn1) {
+            cancelBtn1.addEventListener("click", () => this.handleCancel());
+        }
+
+        // Page 2 - Verification Code
+        const codeInput = document.getElementById("codeInput");
+        const verifyCodeBtn = document.getElementById("verifyCodeBtn");
+        const resendCodeBtn = document.getElementById("resendCodeBtn");
+        const editEmailLink = document.getElementById("editEmailLink");
+        const cancelBtn2 = document.getElementById("cancelBtn2");
+
+        if (codeInput) {
+            codeInput.addEventListener("input", () => this.updatePage2ButtonState());
+            codeInput.addEventListener("keypress", (e) => {
+                if (!/[0-9]/.test(e.key)) {
                     e.preventDefault();
-                    
-                    const emailInput = document.getElementById('email');
-                    if (emailInput && emailInput.value) {
-                        userEmail = emailInput.value;
-                        sessionStorage.setItem('forgotPasswordEmail', userEmail);
-                        
-                        // For B2C, submit form first then redirect
-                        const form = document.getElementById('localAccountForm') || document.querySelector('form');
-                        if (form) {
-                            // B2C will handle email sending
-                            setTimeout(() => {
-                                showStep('verify');
-                            }, 2000);
-                        } else {
-                            showStep('verify');
-                        }
-                    } else {
-                        alert('Please enter your email address');
-                    }
-                };
-            }
-            
-            // Update cancel button text
-            const cancelButton = document.getElementById('cancel');
-            if (cancelButton) {
-                cancelButton.textContent = 'Back to Sign in';
-            }
-        }, 100);
-    }
-    
-    function initializeVerificationStep() {
-        const codeInputs = document.querySelectorAll('.code-input');
-        const verifyButton = document.getElementById('verifyButton');
-        const resendLink = document.getElementById('resendLink');
-        const cancelButton = document.getElementById('cancelButton');
-        
-        // Update cancel button text for verification step
-        if (cancelButton) {
-            cancelButton.textContent = 'Back to Sign in';
-        }
-        
-        // Auto-focus first input
-        if (codeInputs[0]) {
-            codeInputs[0].focus();
-        }
-        
-        // Handle input changes
-        codeInputs.forEach((input, index) => {
-            input.addEventListener('input', function(e) {
-                const value = e.target.value;
-                
-                if (value.length === 1) {
-                    verificationCode[index] = value;
-                    input.classList.add('filled');
-                    
-                    // Move to next input
-                    if (index < codeInputs.length - 1) {
-                        codeInputs[index + 1].focus();
-                    }
-                } else {
-                    verificationCode[index] = '';
-                    input.classList.remove('filled');
-                }
-                
-                // Check if all fields are filled
-                const isComplete = verificationCode.every(code => code !== '');
-                if (verifyButton) {
-                    verifyButton.disabled = !isComplete;
                 }
             });
-            
-            input.addEventListener('keydown', function(e) {
-                // Handle backspace
-                if (e.key === 'Backspace' && e.target.value === '' && index > 0) {
-                    codeInputs[index - 1].focus();
-                }
-                
-                // Handle paste
-                if (e.key === 'Paste' || (e.ctrlKey && e.key === 'v')) {
-                    e.preventDefault();
-                    navigator.clipboard.readText().then(text => {
-                        const pastedCode = text.replace(/\D/g, '').slice(0, 6);
-                        for (let i = 0; i < pastedCode.length; i++) {
-                            if (codeInputs[i]) {
-                                codeInputs[i].value = pastedCode[i];
-                                codeInputs[i].classList.add('filled');
-                                verificationCode[i] = pastedCode[i];
-                            }
-                        }
-                        if (verifyButton) {
-                            verifyButton.disabled = verificationCode.some(code => code === '');
-                        }
-                    });
+        }
+
+        if (verifyCodeBtn) {
+            verifyCodeBtn.addEventListener("click", () => this.handleVerifyCode());
+        }
+
+        if (resendCodeBtn) {
+            resendCodeBtn.addEventListener("click", () => this.handleResendCode());
+        }
+
+        if (editEmailLink) {
+            editEmailLink.addEventListener("click", (e) => {
+                e.preventDefault();
+                this.showPage(1);
+            });
+        }
+
+        if (cancelBtn2) {
+            cancelBtn2.addEventListener("click", () => this.handleCancel());
+        }
+
+        // Page 3 - Password Reset
+        const newPasswordInput = document.getElementById("newPasswordInput");
+        const confirmPasswordInput = document.getElementById("confirmPasswordInput");
+        const resetPasswordBtn = document.getElementById("resetPasswordBtn");
+        const cancelBtn3 = document.getElementById("cancelBtn3");
+
+        if (newPasswordInput) {
+            newPasswordInput.addEventListener("input", () => this.updatePage3ButtonState());
+        }
+
+        if (confirmPasswordInput) {
+            confirmPasswordInput.addEventListener("input", () => this.updatePage3ButtonState());
+        }
+
+        if (resetPasswordBtn) {
+            resetPasswordBtn.addEventListener("click", () => this.handleResetPassword());
+        }
+
+        if (cancelBtn3) {
+            cancelBtn3.addEventListener("click", () => this.handleCancel());
+        }
+
+        // Password toggles
+        this.setupPasswordToggles();
+    }
+
+    setupPasswordToggles() {
+        const toggleButtons = document.querySelectorAll(".password-toggle");
+
+        toggleButtons.forEach((button) => {
+            button.addEventListener("click", () => {
+                const targetId = button.getAttribute("data-target");
+                const input = document.getElementById(targetId);
+
+                if (input) {
+                    const isHidden = input.type === "password";
+                    input.type = isHidden ? "text" : "password";
+                    button.setAttribute("aria-label", isHidden ? "Hide password" : "Show password");
+
+                    const icon = button.querySelector("img");
+                    if (icon) {
+                        icon.src = isHidden
+                            ? "https://stackeducation.github.io/custom_UI/v2/eye-closed-icon.svg"
+                            : "https://stackeducation.github.io/custom_UI/v2/eye-open-icon.svg";
+                    }
                 }
             });
         });
-        
-        // Handle verification form submission
-        const verificationForm = document.getElementById('verificationForm');
-        if (verificationForm) {
-            verificationForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-                
-                const code = verificationCode.join('');
-                console.log('Verifying code:', code);
-                
-                // In production, verify with backend
-                // Simulate verification success
-                setTimeout(() => {
-                    showStep('reset');
-                }, 1000);
-            });
-        }
-        
-        // Handle resend code
-        if (resendLink) {
-            resendLink.addEventListener('click', function(e) {
-                e.preventDefault();
-                console.log('Resending code...');
-                
-                // Clear inputs and reset
-                codeInputs.forEach(input => {
-                    input.value = '';
-                    input.classList.remove('filled');
-                });
-                verificationCode = ['', '', '', '', '', ''];
-                if (verifyButton) {
-                    verifyButton.disabled = true;
-                }
-                codeInputs[0].focus();
-            });
-        }
-        
-        // Handle edit email
-        if (editEmail) {
-            editEmail.addEventListener('click', function(e) {
-                e.preventDefault();
-                showStep('email');
-            });
-        }
-        
-        // Handle cancel
-        if (cancelButton) {
-            cancelButton.addEventListener('click', function() {
-                // Redirect to sign in
-                window.location.href = '../v2/sign-in/signIn.html';
-            });
-        }
     }
-    
-    function initializeResetStep() {
-        const newPasswordInput = document.getElementById('newPassword');
-        const confirmPasswordInput = document.getElementById('confirmPassword');
-        const resetButton = document.getElementById('resetButton');
-        const cancelButton = document.getElementById('cancelButton');
-        
-        // Update cancel button text for reset step
-        if (cancelButton) {
-            cancelButton.textContent = 'Back to Sign in';
+
+    showPage(pageNumber) {
+        const page1 = document.getElementById("page1");
+        const page2 = document.getElementById("page2");
+        const page3 = document.getElementById("page3");
+
+        // Hide all pages
+        if (page1) page1.classList.add("hidden");
+        if (page2) page2.classList.add("hidden");
+        if (page3) page3.classList.add("hidden");
+
+        // Show selected page
+        if (pageNumber === 1 && page1) {
+            page1.classList.remove("hidden");
+            document.getElementById("emailInput")?.focus();
+        } else if (pageNumber === 2 && page2) {
+            page2.classList.remove("hidden");
+            document.getElementById("codeInput")?.focus();
+        } else if (pageNumber === 3 && page3) {
+            page3.classList.remove("hidden");
+            document.getElementById("newPasswordInput")?.focus();
         }
-        
-        // Password requirements elements
-        const lengthReq = document.getElementById('length');
-        const uppercaseReq = document.getElementById('uppercase');
-        const lowercaseReq = document.getElementById('lowercase');
-        const numberReq = document.getElementById('number');
-        
-        function validatePassword(password) {
-            const requirements = {
-                length: password.length >= 8,
-                uppercase: /[A-Z]/.test(password),
-                lowercase: /[a-z]/.test(password),
-                number: /[0-9]/.test(password)
-            };
-            
-            // Update UI
-            if (lengthReq) {
-                lengthReq.classList.toggle('valid', requirements.length);
-            }
-            if (uppercaseReq) {
-                uppercaseReq.classList.toggle('valid', requirements.uppercase);
-            }
-            if (lowercaseReq) {
-                lowercaseReq.classList.toggle('valid', requirements.lowercase);
-            }
-            if (numberReq) {
-                numberReq.classList.toggle('valid', requirements.number);
-            }
-            
-            return Object.values(requirements).every(req => req);
-        }
-        
-        function checkPasswordsMatch() {
-            return newPasswordInput.value === confirmPasswordInput.value && 
-                   newPasswordInput.value !== '';
-        }
-        
-        function updateResetButton() {
-            const isValidPassword = validatePassword(newPasswordInput.value);
-            const passwordsMatch = checkPasswordsMatch();
-            
-            if (resetButton) {
-                resetButton.disabled = !(isValidPassword && passwordsMatch);
-            }
-        }
-        
-        // Event listeners
-        if (newPasswordInput) {
-            newPasswordInput.addEventListener('input', updateResetButton);
-        }
-        
-        if (confirmPasswordInput) {
-            confirmPasswordInput.addEventListener('input', updateResetButton);
-        }
-        
-        // Handle form submission
-        const resetPasswordForm = document.getElementById('resetPasswordForm');
-        if (resetPasswordForm) {
-            resetPasswordForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-                
-                const newPassword = newPasswordInput.value;
-                console.log('Resetting password with:', newPassword);
-                
-                // In production, submit to backend
-                alert('Password reset successfully! Redirecting to sign in...');
-                
-                // Redirect to sign in page
-                setTimeout(() => {
-                    window.location.href = '../v2/sign-in/signIn.html';
-                }, 2000);
-            });
-        }
-        
-        // Handle cancel
-        if (cancelButton) {
-            cancelButton.addEventListener('click', function() {
-                window.location.href = '../v2/sign-in/signIn.html';
-            });
-        }
+
+        this.currentPage = pageNumber;
     }
-    
-    // Make showStep globally accessible for testing
-    window.showStep = showStep;
-});
+
+    updatePage1ButtonState() {
+        const emailInput = document.getElementById("emailInput");
+        const sendCodeBtn = document.getElementById("sendCodeBtn");
+
+        if (!emailInput || !sendCodeBtn) return;
+
+        const isValid = this.isValidEmail(emailInput.value.trim());
+        this.setButtonState(sendCodeBtn, isValid);
+    }
+
+    updatePage2ButtonState() {
+        const codeInput = document.getElementById("codeInput");
+        const verifyCodeBtn = document.getElementById("verifyCodeBtn");
+
+        if (!codeInput || !verifyCodeBtn) return;
+
+        const isValid = codeInput.value.trim().length === 6;
+        this.setButtonState(verifyCodeBtn, isValid);
+    }
+
+    updatePage3ButtonState() {
+        const newPasswordInput = document.getElementById("newPasswordInput");
+        const confirmPasswordInput = document.getElementById("confirmPasswordInput");
+        const resetPasswordBtn = document.getElementById("resetPasswordBtn");
+
+        if (!newPasswordInput || !confirmPasswordInput || !resetPasswordBtn) return;
+
+        const newPassword = newPasswordInput.value.trim();
+        const confirmPassword = confirmPasswordInput.value.trim();
+
+        const isValid = newPassword.length > 0 && confirmPassword.length > 0 && newPassword === confirmPassword;
+        this.setButtonState(resetPasswordBtn, isValid);
+    }
+
+    setButtonState(button, enabled) {
+        if (!button) return;
+
+        button.disabled = !enabled;
+        button.style.backgroundColor = enabled ? "#094074" : "#E1DFD9";
+        button.style.color = enabled ? "#FFFFFF" : "#a3a3a3";
+        button.style.cursor = enabled ? "pointer" : "not-allowed";
+    }
+
+    isValidEmail(email) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+    }
+
+    handleSendCode() {
+        const emailInput = document.getElementById("emailInput");
+
+        if (!emailInput || !this.isValidEmail(emailInput.value.trim())) {
+            alert("Please enter a valid email address");
+            return;
+        }
+
+        this.userEmail = emailInput.value.trim();
+        document.getElementById("emailDisplay").textContent = this.userEmail;
+
+        // Here you would typically make an API call to send the verification code
+        console.log("Sending verification code to:", this.userEmail);
+
+        this.showPage(2);
+    }
+
+    handleVerifyCode() {
+        const codeInput = document.getElementById("codeInput");
+
+        if (!codeInput || codeInput.value.trim().length !== 6) {
+            alert("Please enter a valid 6-digit code");
+            return;
+        }
+
+        // Here you would typically make an API call to verify the code
+        console.log("Verifying code:", codeInput.value.trim());
+
+        this.showPage(3);
+    }
+
+    handleResetPassword() {
+        const newPasswordInput = document.getElementById("newPasswordInput");
+        const confirmPasswordInput = document.getElementById("confirmPasswordInput");
+
+        if (!newPasswordInput || !confirmPasswordInput) return;
+
+        const newPassword = newPasswordInput.value.trim();
+        const confirmPassword = confirmPasswordInput.value.trim();
+
+        if (newPassword !== confirmPassword) {
+            alert("Passwords do not match");
+            return;
+        }
+
+        if (newPassword.length < 8) {
+            alert("Password must be at least 8 characters long");
+            return;
+        }
+
+        // Here you would typically make an API call to reset the password
+        console.log("Resetting password for:", this.userEmail);
+
+        alert("Password reset successfully! Redirecting to sign in...");
+        // Redirect to sign in page
+        window.location.href = "/signin";
+    }
+
+    handleResendCode() {
+        // Here you would typically make an API call to resend the verification code
+        console.log("Resending verification code to:", this.userEmail);
+        alert("Verification code resent to " + this.userEmail);
+    }
+
+    handleCancel() {
+        // Redirect to sign in page
+        window.location.href = "/signin";
+    }
+}
+
+// Initialize the form when DOM is ready
+if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", () => {
+        new ForgotPasswordForm();
+    });
+} else {
+    new ForgotPasswordForm();
+}
