@@ -164,13 +164,16 @@
         .helpLink,
         .attrEntry .verificationSuccessText,
         .entry .working,
-        .verifying-modal {
+        .verifying-modal,
+        /* .buttons:last-child, */
+        #api>.buttons {
             display: none !important;
         }
 
         #api {
             width: 100%;
         }
+
 
         #attributeList ul,
         .entry,
@@ -184,6 +187,14 @@
 
         .entry {
             gap: 48px;
+        }
+
+        #attributeList ul .attrEntry {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding: 0;
+            width: 100%;
         }
 
         #attributeList ul,
@@ -216,6 +227,37 @@
             background: #ffffff;
         }
 
+        .password-field {
+            position: relative;
+            width: 100%;
+        }
+
+        .password-field input {
+            padding-right: 44px;
+        }
+
+        .password-toggle {
+            position: absolute;
+            top: 50%;
+            right: 8px;
+            width: 24px;
+            height: 24px;
+            transform: translateY(-50%);
+            border: none;
+            border-radius: 4px;
+            background: #ffffff;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            cursor: pointer;
+        }
+
+        .password-toggle img {
+            width: 16px;
+            height: 16px;
+        }
+
         #attributeList ul li input::placeholder,
         .entry-item input::placeholder {
             color: var(--text-disabled);
@@ -233,31 +275,57 @@
             flex-direction: column;
             align-items: center;
             gap: 24px;
-            margin-top: 48px;
+            margin-top: 24px;
         }
+
 
         .buttons button {
             width: 100%;
             height: 48px;
-            background-color: var(--button-disabled);
             border-radius: 6px;
             border: none;
             outline: none;
-            color: var(--text-disabled);
             font-size: 16px;
             font-weight: 500;
-            cursor: not-allowed;
             text-transform: uppercase;
         }
 
-        .buttons button:not([aria-disabled=true]):not([disabled]) {
-            background-color: var(--navy);
+        .sendNewCode,
+        .changeClaims {
+            background: var(--navy);
             color: #ffffff;
             cursor: pointer;
         }
 
-        .buttons #cancel {
+        #cancel {
             display: none;
+        }
+
+        .resend-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            width: 100%;
+            font-size: 14px;
+            color: var(--text-tertiary);
+        }
+
+        .resend-helper {
+            color: var(--text-tertiary);
+        }
+
+        .resend-link {
+            background: none;
+            border: none;
+            padding: 0;
+            color: var(--navy);
+            font-size: 12px;
+            font-weight: 500;
+            height: max-content !important;
+            text-transform: lowercase !important;
+            width: max-content !important;
+            cursor: pointer;
         }
 
         @media (max-width: 600px) {
@@ -267,13 +335,143 @@
         }
     </style>
     <script defer>
-        setTimeout(() => {
+        function customizeB2CUI() {
             const signUpButton = document.getElementById('continue');
             if (signUpButton) {
                 signUpButton.textContent = 'Sign Up';
             }
-            document.querySelector('.heading h1').textContent = "Create Account";
-        }, 100);
+
+
+            const emailInput = document.getElementById("email");
+            const verificationCodeInput = document.getElementById("emailVerificationCode");
+            const newPasswordInput = document.getElementById("newPassword");
+            const confirmPasswordInput = document.getElementById("reenterPassword");
+            const sendCodeButton = document.getElementById("emailVerificationControl_but_send_code");
+            const verifyCodeButton = document.getElementById("emailVerificationControl_but_verify_code");
+            const resendCodeButton = document.getElementById("emailVerificationControl_but_send_new_code");
+
+            if (verifyCodeButton) {
+                verifyCodeButton.textContent = "Verify";
+            }
+
+            if (resendCodeButton) {
+                resendCodeButton.textContent = "Resend code";
+            }
+
+            if (verifyCodeButton && resendCodeButton && !resendCodeButton.dataset.repositioned) {
+                const resendRow = document.createElement("div");
+                resendRow.className = "resend-row";
+
+                const helperText = document.createElement("span");
+                helperText.className = "resend-helper";
+                helperText.textContent = "Didn't receive the code?";
+
+                resendCodeButton.classList.add("resend-link");
+
+                resendRow.appendChild(helperText);
+                resendRow.appendChild(resendCodeButton);
+                verifyCodeButton.parentNode.insertBefore(resendRow, verifyCodeButton);
+                resendCodeButton.dataset.repositioned = "true";
+            }
+
+            const attachPasswordToggle = (input) => {
+                if (!input || input.dataset.toggleAttached) {
+                    return;
+                }
+
+                const wrapper = document.createElement("div");
+                wrapper.className = "password-field";
+
+                const toggleButton = document.createElement("button");
+                toggleButton.type = "button";
+                toggleButton.className = "password-toggle";
+                toggleButton.setAttribute("aria-label", "Show password");
+                toggleButton.innerHTML =
+                    "<img src='https://stackeducation.github.io/custom_UI/v2/eye-open-icon.svg' alt='' aria-hidden='true' />";
+
+                input.parentNode.insertBefore(wrapper, input);
+                wrapper.appendChild(input);
+                wrapper.appendChild(toggleButton);
+
+                toggleButton.addEventListener("click", () => {
+                    const isHidden = input.type === "password";
+                    input.type = isHidden ? "text" : "password";
+                    toggleButton.setAttribute("aria-label", isHidden ? "Hide password" : "Show password");
+                    const icon = toggleButton.querySelector("img");
+                    if (icon) {
+                        icon.src = isHidden
+                            ? "https://stackeducation.github.io/custom_UI/v2/eye-closed-icon.svg"
+                            : "https://stackeducation.github.io/custom_UI/v2/eye-open-icon.svg";
+                    }
+                });
+
+                input.dataset.toggleAttached = "true";
+            };
+
+            attachPasswordToggle(newPasswordInput);
+            attachPasswordToggle(confirmPasswordInput);
+
+            const setButtonState = (button, enabled) => {
+                if (!button) {
+                    return;
+                }
+
+                button.disabled = !enabled;
+                button.style.backgroundColor = enabled ? "#094074" : "#E1DFD9";
+                button.style.color = enabled ? "#FFFFFF" : "#a3a3a3";
+                button.style.cursor = enabled ? "pointer" : "not-allowed";
+
+                const resendRow = button.closest(".resend-row");
+                if (resendRow) {
+                    resendRow.style.display = getComputedStyle(button).display === "none" ? "none" : "flex";
+                }
+            };
+
+            const updateResendRowVisibility = () => {
+                if (!resendCodeButton) {
+                    return;
+                }
+
+                const resendRow = resendCodeButton.closest(".resend-row");
+                if (resendRow) {
+                    resendRow.style.display = getComputedStyle(resendCodeButton).display === "none" ? "none" : "flex";
+                }
+            };
+
+            const updateButtonState = () => {
+                if (!emailInput) {
+                    return;
+                }
+                const hasEmail = emailInput.value.trim() !== "";
+                const hasCode = verificationCodeInput && verificationCodeInput.value.trim() !== "";
+                const hasPasswords = newPasswordInput && confirmPasswordInput
+                    ? newPasswordInput.value.trim() !== "" && confirmPasswordInput.value.trim() !== ""
+                    : false;
+                setButtonState(sendCodeButton, hasEmail);
+                setButtonState(verifyCodeButton, hasCode);
+                setButtonState(signUpButton, hasPasswords);
+                updateResendRowVisibility();
+            };
+
+            const attachInputListener = (input) => {
+                if (!input || input.dataset.stateListenerAttached) {
+                    return;
+                }
+
+                input.addEventListener("input", updateButtonState);
+                input.dataset.stateListenerAttached = "true";
+            };
+
+            attachInputListener(emailInput);
+            attachInputListener(verificationCodeInput);
+            attachInputListener(newPasswordInput);
+            attachInputListener(confirmPasswordInput);
+            updateButtonState();
+        }
+
+        setTimeout(customizeB2CUI, 10);
+        // Backup retry
+        setTimeout(customizeB2CUI, 200);
     </script>
 </head>
 
