@@ -4,26 +4,70 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light dark" />
+
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap"  rel="stylesheet" />
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.5/dist/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+
     <title>Sign In</title>
 
     <style>
         :root {
+            color-scheme: light dark;
             --page-bg: #F8F7F5;
             --card-bg: #ffffff;
             --card-border: #f5a631;
             --card-border-light: #FFD089;
-            --angle: 0deg;
+
             --text-primary: #111111;
             --text-secondary: #3c372f;
             --text-tertiary: #6b6560;
             --text-disabled: #a3a3a3;
+
             --navy: #094074;
+            --primary-button-text: #ffffff;
+
+            --input-bg: #ffffff;
             --input-border: #c8c5be;
-            --border-default: #E1DFD9;
+            --input-focus-border: #094074;
+
+            --button-disabled: #E1DFD9;
+            --button-disabled-text: #a3a3a3;
+
+            --error-text: #b00020;
+            --shadow-color: rgba(245, 166, 49, 0.12);
+            --autofill-bg: #ffffff;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                color-scheme: dark;
+
+                --page-bg: #0F1115;
+                --card-bg: #1F1F1F;
+                --card-border: #f5a631;
+                --card-border-light: #FFD089;
+
+                --text-primary: #EDEDED;
+                --text-secondary: #A3A3A3;
+                --text-tertiary: #C7C7C7;
+                --text-disabled: #8A8A8A;
+
+                --navy: #5899D6;
+                --primary-button-text: #07182A;
+
+                --input-bg: #1F1F1F;
+                --input-border: #333333;
+                --input-focus-border: #5899D6;
+
+                --button-disabled: #E1DFD9;
+                --button-disabled-text: #a3a3a3;
+
+                --error-text: #ff8a8a;
+                --shadow-color: rgba(245, 166, 49, 0.16);
+                --autofill-bg: #101318;
+            }
         }
 
         html::-webkit-scrollbar {
@@ -64,45 +108,33 @@
 
         .card {
             position: relative;
-
             width: 565px;
             max-width: 92vw;
-
             padding: 56px;
-
             border-radius: 16px;
-
             display: flex;
             flex-direction: column;
             gap: 32px;
 
             background:
                 linear-gradient(var(--card-bg), var(--card-bg)) padding-box,
-
                 conic-gradient(from var(--border-angle),
-
                     transparent 0deg,
                     transparent 220deg,
-
                     rgba(245, 166, 49, 0.12) 250deg,
                     rgba(255, 208, 137, 0.45) 270deg,
-                    #fff4df 285deg,
+                    rgba(255, 244, 223, 0.45) 285deg,
                     var(--card-border-light) 300deg,
                     var(--card-border) 320deg,
                     var(--card-border) 340deg,
-
                     rgba(245, 166, 49, 0.25) 350deg,
                     transparent 360deg) border-box;
 
             border: 1.5px solid transparent;
-
-            box-shadow:
-                0 0 20.5714px rgba(245, 166, 49, 0.12);
-
+            box-shadow: 0 0 20.5714px var(--shadow-color);
             animation: border-angle-rotate 5s linear infinite;
         }
 
-        /* Smooth animated CSS variable */
         @property --border-angle {
             syntax: "<angle>";
             initial-value: 0deg;
@@ -132,7 +164,7 @@
             gap: 12px;
             height: 48px;
         }
-
+        
         .logo-icon {
             width: 32px;
             height: 32px;
@@ -165,14 +197,14 @@
             margin: 0;
             font-size: 20px;
             font-weight: 500;
-            color: #1f1f1f;
+            color: var(--text-secondary);
             text-transform: lowercase;
         }
 
         .custom-heading p {
             margin: 0;
             font-size: 12px;
-            color: #7a7a7a;
+            color: var(--text-tertiary);
         }
 
         .form-wrapper {
@@ -194,7 +226,6 @@
         .extension_userRole_li,
         .extension_documentSources_li,
         .displayName_li,
-        .error.pageLevel,
         .extension_displayName_li {
             display: none;
         }
@@ -208,6 +239,10 @@
         .entry .working,
         .verifying-modal {
             display: none !important;
+        }
+
+        .error.pageLevel {
+            display: none;
         }
 
         #api {
@@ -251,7 +286,20 @@
             border-radius: 4px;
             padding: 0 12px;
             color: var(--text-primary);
+            background: var(--input-bg);
             font-size: 16px;
+            outline: none;
+        }
+
+        #attributeList ul li input:focus,
+        .entry-item input:focus {
+            border-color: var(--input-focus-border);
+            box-shadow: 0 0 0 1px var(--input-focus-border);
+        }
+
+        #attributeList ul li input::placeholder,
+        .entry-item input::placeholder {
+            color: var(--text-disabled);
         }
 
         #attributeList ul li input:-webkit-autofill,
@@ -262,9 +310,10 @@
         .entry-item input:-webkit-autofill:hover,
         .entry-item input:-webkit-autofill:focus,
         .entry-item input:-webkit-autofill:active {
-            -webkit-box-shadow: 0 0 0 1000px #ffffff inset !important;
-            box-shadow: 0 0 0 1000px #ffffff inset !important;
+            -webkit-box-shadow: 0 0 0 1000px var(--autofill-bg) inset !important;
+            box-shadow: 0 0 0 1000px var(--autofill-bg) inset !important;
             -webkit-text-fill-color: var(--text-primary) !important;
+            caret-color: var(--text-primary) !important;
             font-size: 16px !important;
             transition: background-color 9999s ease-in-out 0s;
             border-radius: 4px;
@@ -288,7 +337,7 @@
             transform: translateY(-50%);
             border: none;
             border-radius: 4px;
-            background: #ffffff;
+            background: var(--input-bg);
             display: inline-flex;
             align-items: center;
             justify-content: center;
@@ -296,19 +345,14 @@
             cursor: pointer;
         }
 
-        .password-toggle svg {
+        .password-toggle img {
             width: 16px;
             height: 16px;
         }
 
-        #attributeList ul li input::placeholder,
-        .entry-item input::placeholder {
-            color: var(--text-disabled);
-        }
-
         #localAccountForm .error,
         #api #attributeVerification .error {
-            color: #b00;
+            color: var(--error-text);
             text-align: left;
             margin: 0;
         }
@@ -325,6 +369,10 @@
             font-weight: 500;
             text-decoration: none;
             width: max-content;
+        }
+
+        #forgotPassword:hover {
+            text-decoration: underline;
         }
 
         .buttons {
@@ -354,8 +402,8 @@
         }
 
         #next:disabled {
-        cursor: not-allowed;
-        opacity: 0.6;
+            cursor: not-allowed;
+            opacity: 0.6;
         }
 
         @media (max-width: 600px) {
@@ -365,22 +413,40 @@
         }
     </style>
 
-    
     <script defer>
         function customizeB2CUI() {
+            const getThemeColor = (name) =>
+                getComputedStyle(document.documentElement)
+                    .getPropertyValue(name)
+                    .trim();
 
-            const forgotPasswordLink = document.getElementById('forgotPassword');
-            const signInButton = document.getElementById('next');
-            if (forgotPasswordLink) {
-                forgotPasswordLink.textContent = 'Forgot Password?';
-            }
+            const applyPrimaryButtonState = (button, enabled) => {
+                if (!button) {
+                    return;
+                }
+
+                button.disabled = !enabled;
+                button.style.backgroundColor = enabled
+                    ? getThemeColor("--navy")
+                    : getThemeColor("--button-disabled");
+                button.style.color = enabled
+                    ? getThemeColor("--primary-button-text")
+                    : getThemeColor("--button-disabled-text");
+                button.style.cursor = enabled ? "pointer" : "not-allowed";
+            };
+
+            const forgotPasswordLink = document.getElementById("forgotPassword");
+            const signInButton = document.getElementById("next");
             const emailInput = document.getElementById("email");
+            const passwordInput = document.getElementById("password");
+
+            if (forgotPasswordLink) {
+                forgotPasswordLink.textContent = "Forgot Password?";
+            }
 
             if (emailInput) {
                 emailInput.placeholder = "Enter your email";
             }
-
-            const passwordInput = document.getElementById("password");
 
             if (passwordInput) {
                 passwordInput.placeholder = "Enter Password";
@@ -403,9 +469,16 @@
 
                 toggleButton.addEventListener("click", () => {
                     const isHidden = passwordInput.type === "password";
+
                     passwordInput.type = isHidden ? "text" : "password";
-                    toggleButton.setAttribute("aria-label", isHidden ? "Hide password" : "Show password");
+
+                    toggleButton.setAttribute(
+                        "aria-label",
+                        isHidden ? "Hide password" : "Show password"
+                    );
+
                     const icon = toggleButton.querySelector("img");
+
                     if (icon) {
                         icon.src = isHidden
                             ? "https://stackeducation.github.io/custom_UI/v2/eye-closed-icon.svg"
@@ -422,29 +495,17 @@
                 }
 
                 const isReady = emailInput.value.trim() !== "" && passwordInput.value.trim() !== "";
-                if (isReady) {
-                    signInButton.disabled = false;
-                    signInButton.style.backgroundColor = "#094074";
-                    signInButton.style.color = "#FFFFFF";
-                    signInButton.style.cursor = "pointer";
-                } else {
-                    signInButton.disabled = true;
-                    signInButton.style.backgroundColor = "#E1DFD9";
-                    signInButton.style.color = "#a3a3a3";
-                    signInButton.style.cursor = "not-allowed";
-                }
+                applyPrimaryButtonState(signInButton, isReady);
             };
 
-            if (emailInput && passwordInput) {
-                if (!emailInput.dataset.stateListenerAttached) {
-                    emailInput.addEventListener("input", updateButtonState);
-                    emailInput.dataset.stateListenerAttached = "true";
-                }
+            if (emailInput && !emailInput.dataset.stateListenerAttached) {
+                emailInput.addEventListener("input", updateButtonState);
+                emailInput.dataset.stateListenerAttached = "true";
+            }
 
-                if (!passwordInput.dataset.stateListenerAttached) {
-                    passwordInput.addEventListener("input", updateButtonState);
-                    passwordInput.dataset.stateListenerAttached = "true";
-                }
+            if (passwordInput && !passwordInput.dataset.stateListenerAttached) {
+                passwordInput.addEventListener("input", updateButtonState);
+                passwordInput.dataset.stateListenerAttached = "true";
             }
 
             updateButtonState();
@@ -459,17 +520,18 @@
             }
 
             const errorBox = document.querySelector(".error.pageLevel");
-            const errorText = errorBox.querySelector("p");
 
-            // check if text exists
-            if (errorText?.textContent?.trim() !== "") {
-                errorBox.style.display = "block";
-                errorBox.setAttribute("aria-hidden", "false");
-            } else {
-                errorBox.style.display = "none";
-                errorBox.setAttribute("aria-hidden", "true");
+            if (errorBox) {
+                const errorText = errorBox.querySelector("p");
+
+                if (errorText?.textContent?.trim() !== "") {
+                    errorBox.style.display = "block";
+                    errorBox.setAttribute("aria-hidden", "false");
+                } else {
+                    errorBox.style.display = "none";
+                    errorBox.setAttribute("aria-hidden", "true");
+                }
             }
-
 
             if (!signInButton || signInButton.dataset.customAttached) {
                 return;
@@ -478,16 +540,20 @@
             signInButton.dataset.customAttached = "true";
 
             signInButton.addEventListener("click", (data) => {
-
-                // Your custom logic here
                 console.log("Custom logic before sign in", data);
-
-                // document.body.classList.add("loading");
-
             });
         }
+
+        document.addEventListener("DOMContentLoaded", customizeB2CUI);
+
         setTimeout(customizeB2CUI, 10);
         setTimeout(customizeB2CUI, 200);
+
+        window
+            .matchMedia("(prefers-color-scheme: dark)")
+            .addEventListener("change", () => {
+                customizeB2CUI();
+            });
     </script>
 </head>
 
@@ -509,8 +575,7 @@
             </div>
 
             <div class="form-wrapper">
-                <div id="api">
-                </div>
+                <div id="api"></div>
             </div>
 
         </section>
