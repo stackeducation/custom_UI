@@ -328,6 +328,16 @@
             cursor: pointer;
         }
 
+        /* Controlled visibility helpers */
+        .b2c-hidden {
+            display: none !important;
+        }
+
+        /* Hide original verification input if you later replace it with OTP boxes */
+        #emailVerificationCode.custom-hidden-verification-input {
+            display: none !important;
+        }
+
         @media (max-width: 600px) {
             .card {
                 padding: 40px 24px;
@@ -336,19 +346,25 @@
     </style>
     <script defer>
         function customizeB2CUI() {
-            const signUpButton = document.getElementById('continue');
-            if (signUpButton) {
-                signUpButton.textContent = 'Sign Up';
-            }
-
+            const signUpButton = document.getElementById("continue");
 
             const emailInput = document.getElementById("email");
             const verificationCodeInput = document.getElementById("emailVerificationCode");
             const newPasswordInput = document.getElementById("newPassword");
             const confirmPasswordInput = document.getElementById("reenterPassword");
+
             const sendCodeButton = document.getElementById("emailVerificationControl_but_send_code");
             const verifyCodeButton = document.getElementById("emailVerificationControl_but_verify_code");
             const resendCodeButton = document.getElementById("emailVerificationControl_but_send_new_code");
+            const changeClaimsButton = document.getElementById("emailVerificationControl_but_change_claims");
+
+            if (signUpButton) {
+                signUpButton.textContent = "Sign Up";
+            }
+
+            if (sendCodeButton) {
+                sendCodeButton.textContent = "Send Verification Code";
+            }
 
             if (verifyCodeButton) {
                 verifyCodeButton.textContent = "Verify";
@@ -357,6 +373,46 @@
             if (resendCodeButton) {
                 resendCodeButton.textContent = "Resend code";
             }
+
+            const getFieldItem = (input) => {
+                if (!input) return null;
+                return input.closest("li") || input.closest(".attrEntry") || input.parentElement;
+            };
+
+            const emailItem = getFieldItem(emailInput);
+            const verificationItem = getFieldItem(verificationCodeInput);
+            const newPasswordItem = getFieldItem(newPasswordInput);
+            const confirmPasswordItem = getFieldItem(confirmPasswordInput);
+
+            const showEl = (el, display = "") => {
+                if (!el) return;
+                el.classList.remove("b2c-hidden");
+                el.style.display = display;
+            };
+
+            const hideEl = (el) => {
+                if (!el) return;
+                el.classList.add("b2c-hidden");
+                el.style.display = "none";
+            };
+
+            const isVisible = (el) => {
+                return !!(
+                    el &&
+                    el.offsetParent !== null &&
+                    getComputedStyle(el).display !== "none" &&
+                    getComputedStyle(el).visibility !== "hidden"
+                );
+            };
+
+            const applyPrimaryButtonState = (button, enabled) => {
+                if (!button) return;
+
+                button.disabled = !enabled;
+                button.style.backgroundColor = enabled ? "#094074" : "#E1DFD9";
+                button.style.color = enabled ? "#FFFFFF" : "#a3a3a3";
+                button.style.cursor = enabled ? "pointer" : "not-allowed";
+            };
 
             if (verifyCodeButton && resendCodeButton && !resendCodeButton.dataset.repositioned) {
                 const resendRow = document.createElement("div");
@@ -370,9 +426,12 @@
 
                 resendRow.appendChild(helperText);
                 resendRow.appendChild(resendCodeButton);
+
                 verifyCodeButton.parentNode.insertBefore(resendRow, verifyCodeButton);
                 resendCodeButton.dataset.repositioned = "true";
             }
+
+            const resendRow = resendCodeButton ? resendCodeButton.closest(".resend-row") : null;
 
             const attachPasswordToggle = (input) => {
                 if (!input || input.dataset.toggleAttached) {
@@ -395,9 +454,16 @@
 
                 toggleButton.addEventListener("click", () => {
                     const isHidden = input.type === "password";
+
                     input.type = isHidden ? "text" : "password";
-                    toggleButton.setAttribute("aria-label", isHidden ? "Hide password" : "Show password");
+
+                    toggleButton.setAttribute(
+                        "aria-label",
+                        isHidden ? "Hide password" : "Show password"
+                    );
+
                     const icon = toggleButton.querySelector("img");
+
                     if (icon) {
                         icon.src = isHidden
                             ? "https://stackeducation.github.io/custom_UI/v2/eye-closed-icon.svg"
@@ -411,46 +477,109 @@
             attachPasswordToggle(newPasswordInput);
             attachPasswordToggle(confirmPasswordInput);
 
-            const setButtonState = (button, enabled) => {
-                if (!button) {
-                    return;
-                }
-
-                button.disabled = !enabled;
-                button.style.backgroundColor = enabled ? "#094074" : "#E1DFD9";
-                button.style.color = enabled ? "#FFFFFF" : "#a3a3a3";
-                button.style.cursor = enabled ? "pointer" : "not-allowed";
-
-                const resendRow = button.closest(".resend-row");
-                if (resendRow) {
-                    resendRow.style.display = getComputedStyle(button).display === "none" ? "none" : "flex";
-                }
-            };
-
-            const updateResendRowVisibility = () => {
-                if (!resendCodeButton) {
-                    return;
-                }
-
-                const resendRow = resendCodeButton.closest(".resend-row");
-                if (resendRow) {
-                    resendRow.style.display = getComputedStyle(resendCodeButton).display === "none" ? "none" : "flex";
-                }
-            };
-
-            const updateButtonState = () => {
-                if (!emailInput) {
-                    return;
-                }
-                const hasEmail = emailInput.value.trim() !== "";
+            const getStep = () => {
+                const hasEmail = emailInput && emailInput.value.trim() !== "";
                 const hasCode = verificationCodeInput && verificationCodeInput.value.trim() !== "";
-                const hasPasswords = newPasswordInput && confirmPasswordInput
-                    ? newPasswordInput.value.trim() !== "" && confirmPasswordInput.value.trim() !== ""
-                    : false;
-                setButtonState(sendCodeButton, hasEmail);
-                setButtonState(verifyCodeButton, hasCode);
-                setButtonState(signUpButton, hasPasswords);
-                updateResendRowVisibility();
+
+                /*
+                Azure B2C usually shows change_claims after email is verified.
+                That is the most reliable signal that verification succeeded.
+                */
+                const emailVerified =
+                    isVisible(changeClaimsButton) ||
+                    (
+                        verificationCodeInput &&
+                        verificationCodeInput.getAttribute("aria-hidden") === "true"
+                    );
+
+                if (emailVerified) {
+                    return "password";
+                }
+
+                /*
+                If B2C has displayed the verification code input or resend button,
+                user is on verification step.
+                */
+                const verificationStarted =
+                    isVisible(verificationCodeInput) ||
+                    isVisible(resendCodeButton) ||
+                    isVisible(verifyCodeButton);
+
+                if (verificationStarted && hasEmail) {
+                    return "verification";
+                }
+
+                return "email";
+            };
+
+            const applyStepVisibility = () => {
+                const step = getStep();
+
+                const hasEmail = emailInput && emailInput.value.trim() !== "";
+                const hasCode = verificationCodeInput && verificationCodeInput.value.trim() !== "";
+                const hasPasswords =
+                    newPasswordInput &&
+                    confirmPasswordInput &&
+                    newPasswordInput.value.trim() !== "" &&
+                    confirmPasswordInput.value.trim() !== "";
+
+                /*
+                Always keep email visible. If you want to hide email after verify,
+                change showEl(emailItem) to hideEl(emailItem) in password step.
+                */
+                showEl(emailItem);
+
+                if (step === "email") {
+                    showEl(sendCodeButton);
+                    applyPrimaryButtonState(sendCodeButton, hasEmail);
+
+                    hideEl(verificationItem);
+                    hideEl(verifyCodeButton);
+                    hideEl(resendRow);
+                    hideEl(resendCodeButton);
+
+                    hideEl(newPasswordItem);
+                    hideEl(confirmPasswordItem);
+                    hideEl(signUpButton);
+                    hideEl(changeClaimsButton);
+
+                    return;
+                }
+
+                if (step === "verification") {
+                    hideEl(sendCodeButton);
+
+                    showEl(verificationItem);
+                    showEl(verifyCodeButton);
+                    applyPrimaryButtonState(verifyCodeButton, hasCode);
+
+                    showEl(resendRow, "flex");
+                    showEl(resendCodeButton);
+
+                    hideEl(newPasswordItem);
+                    hideEl(confirmPasswordItem);
+                    hideEl(signUpButton);
+                    hideEl(changeClaimsButton);
+
+                    return;
+                }
+
+                if (step === "password") {
+                    hideEl(sendCodeButton);
+                    hideEl(verificationItem);
+                    hideEl(verifyCodeButton);
+                    hideEl(resendRow);
+                    hideEl(resendCodeButton);
+                    hideEl(changeClaimsButton);
+
+                    showEl(newPasswordItem);
+                    showEl(confirmPasswordItem);
+
+                    showEl(signUpButton);
+                    applyPrimaryButtonState(signUpButton, hasPasswords);
+
+                    return;
+                }
             };
 
             const attachInputListener = (input) => {
@@ -458,7 +587,7 @@
                     return;
                 }
 
-                input.addEventListener("input", updateButtonState);
+                input.addEventListener("input", applyStepVisibility);
                 input.dataset.stateListenerAttached = "true";
             };
 
@@ -466,12 +595,64 @@
             attachInputListener(verificationCodeInput);
             attachInputListener(newPasswordInput);
             attachInputListener(confirmPasswordInput);
-            updateButtonState();
+
+            const observedElements = [
+                emailInput,
+                verificationCodeInput,
+                newPasswordInput,
+                confirmPasswordInput,
+                sendCodeButton,
+                verifyCodeButton,
+                resendCodeButton,
+                changeClaimsButton,
+                signUpButton
+            ];
+
+            observedElements.forEach((el) => {
+                if (el && !el.dataset.visibilityObserverAttached) {
+                    const observer = new MutationObserver(() => {
+                        applyStepVisibility();
+                    });
+
+                    observer.observe(el, {
+                        attributes: true,
+                        attributeFilter: ["style", "class", "aria-hidden", "disabled"]
+                    });
+
+                    el.dataset.visibilityObserverAttached = "true";
+                }
+            });
+
+            const apiContainer = document.getElementById("api");
+
+            if (apiContainer && !apiContainer.dataset.visibilityObserverAttached) {
+                const apiObserver = new MutationObserver(() => {
+                    customizeB2CUI();
+                    applyStepVisibility();
+                });
+
+                apiObserver.observe(apiContainer, {
+                    childList: true,
+                    subtree: true,
+                    attributes: true,
+                    attributeFilter: ["style", "class", "aria-hidden", "disabled"]
+                });
+
+                apiContainer.dataset.visibilityObserverAttached = "true";
+            }
+
+            applyStepVisibility();
+
+            setTimeout(applyStepVisibility, 0);
+            setTimeout(applyStepVisibility, 100);
+            setTimeout(applyStepVisibility, 300);
         }
 
+        document.addEventListener("DOMContentLoaded", customizeB2CUI);
+
         setTimeout(customizeB2CUI, 10);
-        // Backup retry
         setTimeout(customizeB2CUI, 200);
+        setTimeout(customizeB2CUI, 500);
     </script>
 </head>
 
