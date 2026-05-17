@@ -164,9 +164,16 @@
         .helpLink,
         .attrEntry .verificationSuccessText,
         .entry .working,
-        .verifying-modal {
+        .verifying-modal,
+        /* .buttons:last-child, */
+        #api>.buttons {
             display: none !important;
         }
+
+        #api {
+            width: 100%;
+        }
+
 
         #attributeList ul,
         .entry,
@@ -218,16 +225,6 @@
             color: var(--text-primary);
             font-size: 16px;
             background: #ffffff;
-        }
-
-        #attributeList li:has(#newPassword),
-        #attributeList li:has(#reenterPassword) {
-            display: none;
-        }
-
-        html.signup-password-step #attributeList li:has(#newPassword),
-        html.signup-password-step #attributeList li:has(#reenterPassword) {
-            display: flex;
         }
 
         .password-field {
@@ -331,59 +328,27 @@
             cursor: pointer;
         }
 
-        /* Controlled visibility helpers */
-        .b2c-hidden {
-            display: none !important;
-        }
-
-        .signup-password-hidden {
-            display: none !important;
-        }
-
-        .signup-verification-hidden {
-            display: none !important;
-        }
-
-        /* Hide original verification input if you later replace it with OTP boxes */
-        #emailVerificationCode.custom-hidden-verification-input {
-            display: none !important;
-        }
-
         @media (max-width: 600px) {
             .card {
                 padding: 40px 24px;
             }
         }
     </style>
-
     <script defer>
         function customizeB2CUI() {
-            const signUpButton = document.getElementById("continue");
+            const signUpButton = document.getElementById('continue');
+            if (signUpButton) {
+                signUpButton.textContent = 'Sign Up';
+            }
+
 
             const emailInput = document.getElementById("email");
             const verificationCodeInput = document.getElementById("emailVerificationCode");
             const newPasswordInput = document.getElementById("newPassword");
             const confirmPasswordInput = document.getElementById("reenterPassword");
-
             const sendCodeButton = document.getElementById("emailVerificationControl_but_send_code");
             const verifyCodeButton = document.getElementById("emailVerificationControl_but_verify_code");
             const resendCodeButton = document.getElementById("emailVerificationControl_but_send_new_code");
-            const changeClaimsButton = document.getElementById("emailVerificationControl_but_change_claims");
-
-            const customLogo = document.getElementById("customLogo");
-
-            if (customLogo) {
-                customLogo.src = "https://stackeducation.github.io/custom_UI/v2/stack-logo.svg";
-                customLogo.style.display = "block";
-            }
-
-            if (signUpButton) {
-                signUpButton.textContent = "Create";
-            }
-
-            if (sendCodeButton) {
-                sendCodeButton.textContent = "Send Verification Code";
-            }
 
             if (verifyCodeButton) {
                 verifyCodeButton.textContent = "Verify";
@@ -393,53 +358,21 @@
                 resendCodeButton.textContent = "Resend code";
             }
 
-            const getFieldRow = (input) => {
-                if (!input) return null;
+            if (verifyCodeButton && resendCodeButton && !resendCodeButton.dataset.repositioned) {
+                const resendRow = document.createElement("div");
+                resendRow.className = "resend-row";
 
-                return (
-                    input.closest("li") ||
-                    input.closest(".attrEntry") ||
-                    input.closest(".entry-item") ||
-                    input.parentElement
-                );
-            };
+                const helperText = document.createElement("span");
+                helperText.className = "resend-helper";
+                helperText.textContent = "Didn't receive the code?";
 
-            const emailRow = getFieldRow(emailInput);
-            const verificationRow = getFieldRow(verificationCodeInput);
-            const newPasswordRow = getFieldRow(newPasswordInput);
-            const confirmPasswordRow = getFieldRow(confirmPasswordInput);
+                resendCodeButton.classList.add("resend-link");
 
-            const showEl = (el, display = "") => {
-                if (!el) return;
-                el.classList.remove("b2c-hidden");
-                el.classList.remove("signup-password-hidden");
-                el.classList.remove("signup-verification-hidden");
-                el.style.display = display;
-            };
-
-            const hideEl = (el) => {
-                if (!el) return;
-                el.classList.add("b2c-hidden");
-                el.style.display = "none";
-            };
-
-            const isVisible = (el) => {
-                return !!(
-                    el &&
-                    el.offsetParent !== null &&
-                    getComputedStyle(el).display !== "none" &&
-                    getComputedStyle(el).visibility !== "hidden"
-                );
-            };
-
-            const applyPrimaryButtonState = (button, enabled) => {
-                if (!button) return;
-
-                button.disabled = !enabled;
-                button.style.backgroundColor = enabled ? "#094074" : "#E1DFD9";
-                button.style.color = enabled ? "#FFFFFF" : "#a3a3a3";
-                button.style.cursor = enabled ? "pointer" : "not-allowed";
-            };
+                resendRow.appendChild(helperText);
+                resendRow.appendChild(resendCodeButton);
+                verifyCodeButton.parentNode.insertBefore(resendRow, verifyCodeButton);
+                resendCodeButton.dataset.repositioned = "true";
+            }
 
             const attachPasswordToggle = (input) => {
                 if (!input || input.dataset.toggleAttached) {
@@ -462,16 +395,9 @@
 
                 toggleButton.addEventListener("click", () => {
                     const isHidden = input.type === "password";
-
                     input.type = isHidden ? "text" : "password";
-
-                    toggleButton.setAttribute(
-                        "aria-label",
-                        isHidden ? "Hide password" : "Show password"
-                    );
-
+                    toggleButton.setAttribute("aria-label", isHidden ? "Hide password" : "Show password");
                     const icon = toggleButton.querySelector("img");
-
                     if (icon) {
                         icon.src = isHidden
                             ? "https://stackeducation.github.io/custom_UI/v2/eye-closed-icon.svg"
@@ -485,149 +411,46 @@
             attachPasswordToggle(newPasswordInput);
             attachPasswordToggle(confirmPasswordInput);
 
-            if (verifyCodeButton && resendCodeButton && !resendCodeButton.dataset.repositioned) {
-                const resendRow = document.createElement("div");
-                resendRow.className = "resend-row";
-
-                const helperText = document.createElement("span");
-                helperText.className = "resend-helper";
-                helperText.textContent = "Didn't receive the code?";
-
-                resendCodeButton.classList.add("resend-link");
-
-                resendRow.appendChild(helperText);
-                resendRow.appendChild(resendCodeButton);
-
-                verifyCodeButton.parentNode.insertBefore(resendRow, verifyCodeButton);
-                resendCodeButton.dataset.repositioned = "true";
-            }
-
-            const resendRow = resendCodeButton ? resendCodeButton.closest(".resend-row") : null;
-
-            const getSignUpStep = () => {
-                const hasEmail = emailInput && emailInput.value.trim() !== "";
-
-                /*
-                Password step:
-                After successful verification, Azure B2C usually shows change claims
-                or disables/hides verification controls.
-                */
-                const emailVerified =
-                    isVisible(changeClaimsButton) ||
-                    (
-                        verificationCodeInput &&
-                        verificationCodeInput.disabled &&
-                        verificationCodeInput.value.trim() !== ""
-                    ) ||
-                    (
-                        verifyCodeButton &&
-                        verifyCodeButton.disabled &&
-                        verificationCodeInput &&
-                        verificationCodeInput.value.trim() !== ""
-                    );
-
-                if (emailVerified) {
-                    return "password";
+            const setButtonState = (button, enabled) => {
+                if (!button) {
+                    return;
                 }
 
-                /*
-                Verification step:
-                Send code was clicked and B2C made verification controls visible.
-                */
-                const verificationStarted =
-                    hasEmail &&
-                    (
-                        isVisible(verificationCodeInput) ||
-                        isVisible(verifyCodeButton) ||
-                        isVisible(resendCodeButton)
-                    );
+                button.disabled = !enabled;
+                button.style.backgroundColor = enabled ? "#094074" : "#E1DFD9";
+                button.style.color = enabled ? "#FFFFFF" : "#a3a3a3";
+                button.style.cursor = enabled ? "pointer" : "not-allowed";
 
-                if (verificationStarted) {
-                    return "verification";
+                const resendRow = button.closest(".resend-row");
+                if (resendRow) {
+                    resendRow.style.display = getComputedStyle(button).display === "none" ? "none" : "flex";
                 }
-
-                return "email";
             };
 
-            const applyStepVisibility = () => {
-                const step = getSignUpStep();
+            const updateResendRowVisibility = () => {
+                if (!resendCodeButton) {
+                    return;
+                }
 
-                const hasEmail = emailInput && emailInput.value.trim() !== "";
+                const resendRow = resendCodeButton.closest(".resend-row");
+                if (resendRow) {
+                    resendRow.style.display = getComputedStyle(resendCodeButton).display === "none" ? "none" : "flex";
+                }
+            };
+
+            const updateButtonState = () => {
+                if (!emailInput) {
+                    return;
+                }
+                const hasEmail = emailInput.value.trim() !== "";
                 const hasCode = verificationCodeInput && verificationCodeInput.value.trim() !== "";
-                const hasPasswords =
-                    newPasswordInput &&
-                    confirmPasswordInput &&
-                    newPasswordInput.value.trim() !== "" &&
-                    confirmPasswordInput.value.trim() !== "";
-
-                /*
-                EMAIL STEP:
-                Only email + send verification code.
-                */
-                if (step === "email") {
-                    showEl(emailRow);
-
-                    showEl(sendCodeButton);
-                    applyPrimaryButtonState(sendCodeButton, hasEmail);
-
-                    hideEl(verificationRow);
-                    hideEl(verifyCodeButton);
-                    hideEl(resendRow);
-                    hideEl(resendCodeButton);
-                    hideEl(changeClaimsButton);
-
-                    hideEl(newPasswordRow);
-                    hideEl(confirmPasswordRow);
-                    hideEl(signUpButton);
-
-                    return;
-                }
-
-                /*
-                VERIFICATION STEP:
-                Show code + resend + verify only.
-                */
-                if (step === "verification") {
-                    showEl(emailRow);
-
-                    hideEl(sendCodeButton);
-
-                    showEl(verificationRow);
-                    showEl(verifyCodeButton);
-                    applyPrimaryButtonState(verifyCodeButton, hasCode);
-
-                    showEl(resendRow, "flex");
-                    showEl(resendCodeButton);
-
-                    hideEl(changeClaimsButton);
-                    hideEl(newPasswordRow);
-                    hideEl(confirmPasswordRow);
-                    hideEl(signUpButton);
-
-                    return;
-                }
-
-                /*
-                PASSWORD STEP:
-                Show only password fields + Create.
-                */
-                if (step === "password") {
-                    hideEl(emailRow);
-                    hideEl(sendCodeButton);
-                    hideEl(verificationRow);
-                    hideEl(verifyCodeButton);
-                    hideEl(resendRow);
-                    hideEl(resendCodeButton);
-                    hideEl(changeClaimsButton);
-
-                    showEl(newPasswordRow);
-                    showEl(confirmPasswordRow);
-
-                    showEl(signUpButton);
-                    applyPrimaryButtonState(signUpButton, hasPasswords);
-
-                    return;
-                }
+                const hasPasswords = newPasswordInput && confirmPasswordInput
+                    ? newPasswordInput.value.trim() !== "" && confirmPasswordInput.value.trim() !== ""
+                    : false;
+                setButtonState(sendCodeButton, hasEmail);
+                setButtonState(verifyCodeButton, hasCode);
+                setButtonState(signUpButton, hasPasswords);
+                updateResendRowVisibility();
             };
 
             const attachInputListener = (input) => {
@@ -635,7 +458,7 @@
                     return;
                 }
 
-                input.addEventListener("input", applyStepVisibility);
+                input.addEventListener("input", updateButtonState);
                 input.dataset.stateListenerAttached = "true";
             };
 
@@ -643,64 +466,12 @@
             attachInputListener(verificationCodeInput);
             attachInputListener(newPasswordInput);
             attachInputListener(confirmPasswordInput);
-
-            const observedElements = [
-                emailInput,
-                verificationCodeInput,
-                newPasswordInput,
-                confirmPasswordInput,
-                sendCodeButton,
-                verifyCodeButton,
-                resendCodeButton,
-                changeClaimsButton,
-                signUpButton
-            ];
-
-            observedElements.forEach((el) => {
-                if (el && !el.dataset.visibilityObserverAttached) {
-                    const observer = new MutationObserver(() => {
-                        applyStepVisibility();
-                    });
-
-                    observer.observe(el, {
-                        attributes: true,
-                        attributeFilter: ["style", "class", "aria-hidden", "disabled"]
-                    });
-
-                    el.dataset.visibilityObserverAttached = "true";
-                }
-            });
-
-            const apiContainer = document.getElementById("api");
-
-            if (apiContainer && !apiContainer.dataset.visibilityObserverAttached) {
-                const apiObserver = new MutationObserver(() => {
-                    applyStepVisibility();
-                });
-
-                apiObserver.observe(apiContainer, {
-                    childList: true,
-                    subtree: true,
-                    attributes: true,
-                    attributeFilter: ["style", "class", "aria-hidden", "disabled"]
-                });
-
-                apiContainer.dataset.visibilityObserverAttached = "true";
-            }
-
-            applyStepVisibility();
-
-            setTimeout(applyStepVisibility, 0);
-            setTimeout(applyStepVisibility, 100);
-            setTimeout(applyStepVisibility, 300);
-            setTimeout(applyStepVisibility, 600);
+            updateButtonState();
         }
 
-        document.addEventListener("DOMContentLoaded", customizeB2CUI);
-
         setTimeout(customizeB2CUI, 10);
+        // Backup retry
         setTimeout(customizeB2CUI, 200);
-        setTimeout(customizeB2CUI, 500);
     </script>
 </head>
 
@@ -709,7 +480,7 @@
         <section class="card">
             <div class="brand">
                 <div class="logo">
-                    <img class="companyLogo"
+                    <img class="companyLogo" data-tenant-branding-logo="true"
                         src="https://stackeducation.github.io/custom_UI/v2/stack-logo.svg" width="179" height="48"
                         alt="Company Logo">
                 </div>
