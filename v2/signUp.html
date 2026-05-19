@@ -433,9 +433,15 @@
                 }
 
                 const resendRow = resendCodeButton.closest(".resend-row");
-                if (resendRow) {
-                    resendRow.style.display = getComputedStyle(resendCodeButton).display === "none" ? "none" : "flex";
+                if (!resendRow) {
+                    return;
                 }
+
+                const isVisible =
+                    getComputedStyle(resendCodeButton).display !== "none" &&
+                    resendCodeButton.getAttribute("aria-hidden") !== "true";
+
+                resendRow.style.display = isVisible ? "flex" : "none";
             };
 
             const updateButtonState = () => {
@@ -467,6 +473,22 @@
             attachInputListener(newPasswordInput);
             attachInputListener(confirmPasswordInput);
             updateButtonState();
+
+            if (sendCodeButton && !sendCodeButton.dataset.visibilityListenerAttached) {
+                sendCodeButton.addEventListener("click", () => {
+                    setTimeout(updateResendRowVisibility, 50);
+                });
+                sendCodeButton.dataset.visibilityListenerAttached = "true";
+            }
+
+            if (resendCodeButton && !resendCodeButton.dataset.visibilityObserverAttached) {
+                const observer = new MutationObserver(updateResendRowVisibility);
+                observer.observe(resendCodeButton, {
+                    attributes: true,
+                    attributeFilter: ["style", "class", "aria-hidden"],
+                });
+                resendCodeButton.dataset.visibilityObserverAttached = "true";
+            }
         }
 
         setTimeout(customizeB2CUI, 10);
