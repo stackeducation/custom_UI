@@ -483,6 +483,11 @@
                 wrapper.className = "verification-code-wrapper";
                 wrapper.setAttribute("aria-label", "Enter 6 digit verification code");
 
+                const wrapperError = document.createElement("div");
+                wrapperError.className = "error itemLevel";
+                wrapperError.setAttribute("aria-hidden", "true");
+                wrapperError.style.display = "none";
+
                 const boxes = [];
 
                 for (let i = 0; i < 6; i++) {
@@ -544,6 +549,8 @@
                     boxes.push(box);
                     wrapper.appendChild(box);
                 }
+
+                wrapper.appendChild(wrapperError);
 
                 realInput.parentNode.insertBefore(wrapper, realInput);
 
