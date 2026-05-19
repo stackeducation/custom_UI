@@ -349,6 +349,7 @@
             const sendCodeButton = document.getElementById("emailVerificationControl_but_send_code");
             const verifyCodeButton = document.getElementById("emailVerificationControl_but_verify_code");
             const resendCodeButton = document.getElementById("emailVerificationControl_but_send_new_code");
+            const changeClaimsButton = document.getElementById("emailVerificationControl_but_change_claims");
 
             if (verifyCodeButton) {
                 verifyCodeButton.textContent = "Verify";
@@ -444,6 +445,38 @@
                 resendRow.style.display = isVisible ? "flex" : "none";
             };
 
+            const setPasswordSectionVisibility = (isVisible) => {
+                const newPasswordItem = newPasswordInput ? newPasswordInput.closest("li") : null;
+                const confirmPasswordItem = confirmPasswordInput ? confirmPasswordInput.closest("li") : null;
+
+                if (newPasswordItem) {
+                    newPasswordItem.style.display = isVisible ? "block" : "none";
+                    newPasswordItem.setAttribute("aria-hidden", isVisible ? "false" : "true");
+                }
+
+                if (confirmPasswordItem) {
+                    confirmPasswordItem.style.display = isVisible ? "block" : "none";
+                    confirmPasswordItem.setAttribute("aria-hidden", isVisible ? "false" : "true");
+                }
+
+                if (signUpButton) {
+                    signUpButton.style.display = isVisible ? "inline-flex" : "none";
+                    signUpButton.setAttribute("aria-hidden", isVisible ? "false" : "true");
+                }
+            };
+
+            const updatePasswordSectionVisibility = () => {
+                if (!changeClaimsButton) {
+                    return;
+                }
+
+                const isVerified =
+                    getComputedStyle(changeClaimsButton).display !== "none" &&
+                    changeClaimsButton.getAttribute("aria-hidden") !== "true";
+
+                setPasswordSectionVisibility(isVerified);
+            };
+
             const updateButtonState = () => {
                 if (!emailInput) {
                     return;
@@ -473,6 +506,7 @@
             attachInputListener(newPasswordInput);
             attachInputListener(confirmPasswordInput);
             updateButtonState();
+            updatePasswordSectionVisibility();
 
             if (sendCodeButton && !sendCodeButton.dataset.visibilityListenerAttached) {
                 sendCodeButton.addEventListener("click", () => {
@@ -488,6 +522,15 @@
                     attributeFilter: ["style", "class", "aria-hidden"],
                 });
                 resendCodeButton.dataset.visibilityObserverAttached = "true";
+            }
+
+            if (changeClaimsButton && !changeClaimsButton.dataset.visibilityObserverAttached) {
+                const observer = new MutationObserver(updatePasswordSectionVisibility);
+                observer.observe(changeClaimsButton, {
+                    attributes: true,
+                    attributeFilter: ["style", "class", "aria-hidden"],
+                });
+                changeClaimsButton.dataset.visibilityObserverAttached = "true";
             }
         }
 
