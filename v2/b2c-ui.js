@@ -358,6 +358,15 @@
         setStyle(wrapper, "display", visible ? "grid" : "none");
     };
 
+    // Both journeys render the same widget, so they share its label copy rather
+    // than keeping B2C's generic "Verification code" on one of them.
+    const syncVerificationCodeLabel = () => {
+        setText(
+            document.querySelector("label[for='" + IDS.code + "']"),
+            "Enter and Verify 6-digit code"
+        );
+    };
+
     /* --------------------------------------------------------------- errors */
 
     const syncPageLevelError = () => {
@@ -483,6 +492,7 @@
         buildResendRow();
         syncPasswordToggles();
         attachVerificationBoxes();
+        syncVerificationCodeLabel();
 
         /*
          * Unlike the reset journey, sign-up has no stage machine to hide the
@@ -541,9 +551,7 @@
         const resendCode = byId(IDS.resendCode);
         const continueButton = byId(IDS.continue);
         const cancelButton = byId(IDS.cancel);
-        const codeLabel = document.querySelector("label[for='" + IDS.code + "']");
 
-        setText(codeLabel, "Enter and Verify 6-digit code");
         setText(verifyCode, "Verify");
         setText(resendCode, "Resend code");
         setText(cancelButton, "Back to Sign in");
@@ -551,6 +559,7 @@
         buildResendRow();
         syncPasswordToggles();
         attachVerificationBoxes();
+        syncVerificationCodeLabel();
 
         const stage = detectResetStage();
 
