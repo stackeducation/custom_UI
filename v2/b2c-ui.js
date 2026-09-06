@@ -117,6 +117,10 @@
     // the node is missing, which reads a missing field as "filled in".
     const hasValue = (node) => !!node && node.value.trim() !== "";
 
+    // The code is always six digits, so a partially filled set of boxes must
+    // not enable Verify.
+    const isCompleteCode = (node) => !!node && /^\d{6}$/.test(node.value.trim());
+
     /* ------------------------------------------------------- button states */
 
     const setPrimaryState = (button, enabled) => {
@@ -348,6 +352,12 @@
         parent.insertBefore(wrapper, realInput);
     };
 
+    const setVerificationBoxesVisible = (visible) => {
+        const wrapper = document.querySelector(".verification-code-wrapper");
+
+        setStyle(wrapper, "display", visible ? "grid" : "none");
+    };
+
     /* --------------------------------------------------------------- errors */
 
     const syncPageLevelError = () => {
@@ -472,9 +482,19 @@
 
         buildResendRow();
         syncPasswordToggles();
+        attachVerificationBoxes();
+
+        /*
+         * Unlike the reset journey, sign-up has no stage machine to hide the
+         * boxes, and B2C may only toggle the code input itself rather than an
+         * ancestor - which would leave six empty boxes on the email step. The
+         * verify button is B2C's own "awaiting a code" signal and we never
+         * write to its display here, so it is safe to read back.
+         */
+        setVerificationBoxesVisible(isSelfDisplayed(verifyCode));
 
         setPrimaryState(sendCode, hasValue(emailInput));
-        setPrimaryState(verifyCode, hasValue(codeInput));
+        setPrimaryState(verifyCode, isCompleteCode(codeInput));
         setPrimaryState(signUpButton, hasValue(newPassword) && hasValue(confirmPassword));
 
         // The change-claims button is B2C's own "email verified" tell.
@@ -544,7 +564,7 @@
             setPrimaryState(sendCode, hasValue(emailInput));
         } else if (stage === "verification") {
             showButton(verifyCode);
-            setPrimaryState(verifyCode, /^\d{6}$/.test(codeInput ? codeInput.value.trim() : ""));
+            setPrimaryState(verifyCode, isCompleteCode(codeInput));
             showButton(resendCode, "inline-flex");
             setDisabled(resendCode, false);
         } else if (stage === "changeEmail") {

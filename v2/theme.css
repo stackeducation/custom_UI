@@ -468,9 +468,13 @@ body {
 
 /* ----------------------------------------------- 6-digit verification code */
 
-#attributeList ul li .verification-code-wrapper,
+/*
+ * No !important on display: sign-up drives the wrapper's visibility from B2C's
+ * verify button via an inline style, which an !important rule here would beat.
+ * Nothing in the injected markup competes for this selector.
+ */
 .verification-code-wrapper {
-    display: grid !important;
+    display: grid;
     grid-template-columns: repeat(6, 1fr);
     gap: 16px;
     width: 100%;
