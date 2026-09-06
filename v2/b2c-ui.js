@@ -1,0 +1,641 @@
+/*
+ * Stack / incline - Azure AD B2C custom UI
+ * Shared runtime for signIn, signUp and forgotPassword.
+ *
+ * B2C injects its form into #api asynchronously and re-renders parts of it as
+ * the user moves through a journey, so every pass below re-queries the DOM
+ * rather than holding element references across renders, and every DOM write
+ * is change-guarded so re-running a pass is a no-op.
+ *
+ * The page selects its behaviour with <body data-page="...">.
+ */
+(function () {
+    "use strict";
+
+    const self = document.currentScript;
+    const ASSET_BASE =
+        (window.StackB2CAssets && window.StackB2CAssets.baseUrl) ||
+        (self && self.src ? self.src.replace(/[^/]*$/, "") : "");
+
+    const EYE_OPEN = ASSET_BASE + "eye-open-icon.svg";
+    const EYE_CLOSED = ASSET_BASE + "eye-closed-icon.svg";
+
+    const IDS = {
+        email: "email",
+        password: "password",
+        code: "emailVerificationCode",
+        newPassword: "newPassword",
+        confirmPassword: "reenterPassword",
+        sendCode: "emailVerificationControl_but_send_code",
+        verifyCode: "emailVerificationControl_but_verify_code",
+        resendCode: "emailVerificationControl_but_send_new_code",
+        changeClaims: "emailVerificationControl_but_change_claims",
+        continue: "continue",
+        next: "next",
+        cancel: "cancel",
+        forgotPassword: "forgotPassword"
+    };
+
+    /* ------------------------------------------------------------- helpers */
+
+    const byId = (id) => document.getElementById(id);
+
+    const themeColor = (name) =>
+        getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+
+    /*
+     * Guarded writers. Writing an attribute with the value it already has still
+     * produces a MutationRecord, which would keep our own observer re-firing
+     * forever. Comparing first lets a steady-state pass emit no mutations.
+     */
+    const setText = (node, value) => {
+        if (node && node.textContent !== value) {
+            node.textContent = value;
+        }
+    };
+
+    const setStyle = (node, prop, value) => {
+        if (node && node.style[prop] !== value) {
+            node.style[prop] = value;
+        }
+    };
+
+    const setAttr = (node, name, value) => {
+        if (node && node.getAttribute(name) !== value) {
+            node.setAttribute(name, value);
+        }
+    };
+
+    const removeAttr = (node, name) => {
+        if (node && node.hasAttribute(name)) {
+            node.removeAttribute(name);
+        }
+    };
+
+    const setDisabled = (node, value) => {
+        if (node && node.disabled !== value) {
+            node.disabled = value;
+        }
+    };
+
+    const isVisible = (node) => {
+        if (!node) {
+            return false;
+        }
+
+        const style = getComputedStyle(node);
+
+        return (
+            node.offsetParent !== null &&
+            style.display !== "none" &&
+            style.visibility !== "hidden"
+        );
+    };
+
+    /*
+     * Visibility of the node itself, ignoring its ancestors. The resend button
+     * is relocated into .resend-row, so asking whether it is *rendered* would
+     * be circular - the row is hidden, therefore the button reads as hidden,
+     * therefore the row stays hidden. B2C only ever toggles the button's own
+     * display, which is what we read here.
+     */
+    const isSelfDisplayed = (node) => {
+        if (!node) {
+            return false;
+        }
+
+        const style = getComputedStyle(node);
+
+        return (
+            style.display !== "none" &&
+            style.visibility !== "hidden" &&
+            node.getAttribute("aria-hidden") !== "true"
+        );
+    };
+
+    // Explicit null check: `node?.value.trim() !== ""` evaluates to true when
+    // the node is missing, which reads a missing field as "filled in".
+    const hasValue = (node) => !!node && node.value.trim() !== "";
+
+    /* ------------------------------------------------------- button states */
+
+    const setPrimaryState = (button, enabled) => {
+        if (!button) {
+            return;
+        }
+
+        setDisabled(button, !enabled);
+        setStyle(button, "backgroundColor", enabled ? themeColor("--navy") : themeColor("--button-disabled"));
+        setStyle(button, "color", enabled ? themeColor("--primary-button-text") : themeColor("--button-disabled-text"));
+        setStyle(button, "cursor", enabled ? "pointer" : "not-allowed");
+    };
+
+    const showButton = (button, display) => {
+        if (!button) {
+            return;
+        }
+
+        setStyle(button, "display", display || "block");
+    };
+
+    const hideButton = (button) => {
+        if (!button) {
+            return;
+        }
+
+        setStyle(button, "display", "none");
+        setDisabled(button, true);
+    };
+
+    /* ------------------------------------------------------ password toggle */
+
+    const attachPasswordToggle = (input) => {
+        if (!input || input.dataset.toggleAttached === "true") {
+            return;
+        }
+
+        const wrapper = document.createElement("div");
+        wrapper.className = "password-field";
+
+        const toggleButton = document.createElement("button");
+        toggleButton.type = "button";
+        toggleButton.className = "password-toggle";
+        toggleButton.setAttribute("aria-label", "Show password");
+        toggleButton.innerHTML = "<img src='" + EYE_OPEN + "' alt='' aria-hidden='true' />";
+
+        input.parentNode.insertBefore(wrapper, input);
+        wrapper.appendChild(input);
+        wrapper.appendChild(toggleButton);
+
+        toggleButton.addEventListener("click", () => {
+            const isHidden = input.type === "password";
+
+            input.type = isHidden ? "text" : "password";
+            toggleButton.setAttribute("aria-label", isHidden ? "Hide password" : "Show password");
+
+            const icon = toggleButton.querySelector("img");
+
+            if (icon) {
+                icon.src = isHidden ? EYE_CLOSED : EYE_OPEN;
+            }
+        });
+
+        input.dataset.toggleAttached = "true";
+    };
+
+    const syncPasswordToggles = () => {
+        attachPasswordToggle(byId(IDS.newPassword));
+        attachPasswordToggle(byId(IDS.confirmPassword));
+        attachPasswordToggle(byId(IDS.password));
+    };
+
+    /* ----------------------------------------------------------- resend row */
+
+    const buildResendRow = () => {
+        const verifyCode = byId(IDS.verifyCode);
+        const resendCode = byId(IDS.resendCode);
+
+        if (!verifyCode || !resendCode || resendCode.dataset.repositioned === "true") {
+            return;
+        }
+
+        const resendRow = document.createElement("div");
+        resendRow.className = "resend-row";
+
+        const helperText = document.createElement("span");
+        helperText.className = "resend-helper";
+        helperText.textContent = "Didn't receive the code?";
+
+        resendCode.classList.add("resend-link");
+
+        resendRow.appendChild(helperText);
+        resendRow.appendChild(resendCode);
+        verifyCode.parentNode.insertBefore(resendRow, verifyCode);
+
+        resendCode.dataset.repositioned = "true";
+    };
+
+    const setResendRowVisible = (visible) => {
+        const resendCode = byId(IDS.resendCode);
+        const resendRow = resendCode && resendCode.closest(".resend-row");
+
+        if (!resendRow) {
+            return;
+        }
+
+        setStyle(resendRow, "display", visible ? "flex" : "none");
+    };
+
+    /* ------------------------------------------------ 6-digit code entry UI */
+
+    const attachVerificationBoxes = () => {
+        const realInput = byId(IDS.code);
+
+        if (!realInput) {
+            /*
+             * B2C drops the code input once the address is verified. Any wrapper
+             * we injected next to it can outlive it, and a stale one still reads
+             * as visible - which would pin stage detection on "verification".
+             */
+            document.querySelectorAll(".verification-code-wrapper").forEach((orphan) => {
+                orphan.remove();
+            });
+
+            return;
+        }
+
+        const parent = realInput.parentNode;
+        const existing = parent ? parent.querySelector(".verification-code-wrapper") : null;
+
+        // Re-runs on every pass: if B2C swapped the input (or dropped our
+        // wrapper) on a re-render, the boxes are rebuilt instead of silently
+        // leaving the user with the raw single-field input.
+        if (realInput.dataset.sixDigitAttached === "true" && existing) {
+            return;
+        }
+
+        if (existing && existing.parentNode) {
+            existing.parentNode.removeChild(existing);
+        }
+
+        realInput.dataset.sixDigitAttached = "true";
+        realInput.classList.add("custom-hidden-verification-input");
+        realInput.setAttribute("maxlength", "6");
+        realInput.setAttribute("inputmode", "numeric");
+        realInput.setAttribute("autocomplete", "one-time-code");
+
+        const wrapper = document.createElement("div");
+        wrapper.className = "verification-code-wrapper";
+        wrapper.setAttribute("role", "group");
+        wrapper.setAttribute("aria-label", "Enter 6 digit verification code");
+
+        const boxes = [];
+
+        const syncRealInput = () => {
+            const code = boxes.map((box) => box.value).join("");
+
+            if (realInput.value === code) {
+                return;
+            }
+
+            realInput.value = code;
+            realInput.dispatchEvent(new Event("input", { bubbles: true }));
+            realInput.dispatchEvent(new Event("change", { bubbles: true }));
+        };
+
+        const existingDigits = realInput.value.replace(/\D/g, "").slice(0, 6).split("");
+
+        for (let i = 0; i < 6; i++) {
+            const box = document.createElement("input");
+
+            box.type = "text";
+            box.inputMode = "numeric";
+            box.maxLength = 1;
+            box.autocomplete = i === 0 ? "one-time-code" : "off";
+            box.className = "verification-code-box";
+            box.value = existingDigits[i] || "";
+            box.setAttribute("aria-label", "Digit " + (i + 1) + " of verification code");
+
+            box.addEventListener("input", (event) => {
+                const digits = event.target.value.replace(/\D/g, "");
+
+                event.target.value = digits.slice(-1);
+
+                if (digits && i < boxes.length - 1) {
+                    boxes[i + 1].focus();
+                }
+
+                syncRealInput();
+            });
+
+            box.addEventListener("keydown", (event) => {
+                if (event.key === "Backspace" && !box.value && i > 0) {
+                    boxes[i - 1].focus();
+                }
+
+                if (event.key === "ArrowLeft" && i > 0) {
+                    boxes[i - 1].focus();
+                }
+
+                if (event.key === "ArrowRight" && i < boxes.length - 1) {
+                    boxes[i + 1].focus();
+                }
+            });
+
+            box.addEventListener("paste", (event) => {
+                event.preventDefault();
+
+                const pasted = (event.clipboardData || window.clipboardData)
+                    .getData("text")
+                    .replace(/\D/g, "")
+                    .slice(0, 6);
+
+                pasted.split("").forEach((digit, index) => {
+                    if (boxes[index]) {
+                        boxes[index].value = digit;
+                    }
+                });
+
+                boxes[Math.min(pasted.length, boxes.length - 1)].focus();
+
+                syncRealInput();
+            });
+
+            boxes.push(box);
+            wrapper.appendChild(box);
+        }
+
+        parent.insertBefore(wrapper, realInput);
+    };
+
+    /* --------------------------------------------------------------- errors */
+
+    const syncPageLevelError = () => {
+        const errorBox = document.querySelector(".error.pageLevel");
+
+        if (!errorBox) {
+            return;
+        }
+
+        const message = errorBox.querySelector("p");
+        // A container with no <p> at all is empty, not an error to display.
+        const hasMessage = !!message && message.textContent.trim() !== "";
+
+        setStyle(errorBox, "display", hasMessage ? "block" : "none");
+        setAttr(errorBox, "aria-hidden", hasMessage ? "false" : "true");
+    };
+
+    /* ---------------------------------------------------------- busy state */
+
+    const BUSY_BUTTON_IDS = [IDS.next, IDS.continue, IDS.sendCode, IDS.verifyCode];
+
+    const attachBusyOnSubmit = () => {
+        BUSY_BUTTON_IDS.forEach((id) => {
+            const button = byId(id);
+
+            if (!button || button.dataset.busyAttached === "true") {
+                return;
+            }
+
+            button.dataset.busyAttached = "true";
+
+            button.addEventListener("click", () => {
+                if (button.disabled) {
+                    return;
+                }
+
+                setAttr(button, "aria-busy", "true");
+            });
+        });
+    };
+
+    // B2C answers a failed submit by rendering an error rather than navigating,
+    // so clear the spinner as soon as one appears - otherwise it spins forever.
+    const clearBusyOnError = () => {
+        const errored = Array.from(document.querySelectorAll("#api .error")).some(isVisible);
+
+        if (!errored) {
+            return;
+        }
+
+        Array.from(document.querySelectorAll("[aria-busy='true']")).forEach((node) => {
+            removeAttr(node, "aria-busy");
+        });
+    };
+
+    /* ----------------------------------------------------------- sign in UI */
+
+    const customizeSignIn = () => {
+        const forgotLink = byId(IDS.forgotPassword);
+        const nextButton = byId(IDS.next);
+        const emailInput = byId(IDS.email);
+        const passwordInput = byId(IDS.password);
+
+        setText(forgotLink, "Forgot Password?");
+
+        if (emailInput && emailInput.placeholder !== "Enter your email") {
+            emailInput.placeholder = "Enter your email";
+        }
+
+        if (passwordInput && passwordInput.placeholder !== "Enter Password") {
+            passwordInput.placeholder = "Enter Password";
+        }
+
+        syncPasswordToggles();
+
+        // Anchored to the password field rather than :nth-of-type(2), which
+        // silently retargets whenever B2C changes the field order.
+        const passwordItem = passwordInput && passwordInput.closest(".entry-item");
+
+        if (passwordItem && forgotLink && passwordItem.lastElementChild !== forgotLink) {
+            passwordItem.appendChild(forgotLink);
+        }
+
+        setPrimaryState(nextButton, hasValue(emailInput) && hasValue(passwordInput));
+    };
+
+    /* ----------------------------------------------------------- sign up UI */
+
+    const setSignUpPasswordSectionVisible = (visible) => {
+        const newPassword = byId(IDS.newPassword);
+        const confirmPassword = byId(IDS.confirmPassword);
+        const signUpButton = byId(IDS.continue);
+
+        [
+            newPassword && newPassword.closest("li"),
+            confirmPassword && confirmPassword.closest("li"),
+            signUpButton
+        ].forEach((node) => {
+            if (!node) {
+                return;
+            }
+
+            setStyle(node, "display", visible ? "block" : "none");
+            setAttr(node, "aria-hidden", visible ? "false" : "true");
+        });
+    };
+
+    const customizeSignUp = () => {
+        const emailInput = byId(IDS.email);
+        const codeInput = byId(IDS.code);
+        const newPassword = byId(IDS.newPassword);
+        const confirmPassword = byId(IDS.confirmPassword);
+        const sendCode = byId(IDS.sendCode);
+        const verifyCode = byId(IDS.verifyCode);
+        const resendCode = byId(IDS.resendCode);
+        const changeClaims = byId(IDS.changeClaims);
+        const signUpButton = byId(IDS.continue);
+
+        setText(signUpButton, "Sign Up");
+        setText(verifyCode, "Verify");
+        setText(resendCode, "Resend code");
+
+        buildResendRow();
+        syncPasswordToggles();
+
+        setPrimaryState(sendCode, hasValue(emailInput));
+        setPrimaryState(verifyCode, hasValue(codeInput));
+        setPrimaryState(signUpButton, hasValue(newPassword) && hasValue(confirmPassword));
+
+        // The change-claims button is B2C's own "email verified" tell.
+        setSignUpPasswordSectionVisible(isVisible(changeClaims));
+        setResendRowVisible(isSelfDisplayed(resendCode));
+    };
+
+    /* -------------------------------------------------- forgot password UI */
+
+    /*
+     * The reset journey is four screens rendered from one form. Stage is read
+     * from what B2C currently shows, in this precedence order.
+     */
+    const detectResetStage = () => {
+        const newPassword = byId(IDS.newPassword);
+        const confirmPassword = byId(IDS.confirmPassword);
+
+        if (isVisible(newPassword) && isVisible(confirmPassword)) {
+            return "password";
+        }
+
+        if (isVisible(byId(IDS.changeClaims))) {
+            return "changeEmail";
+        }
+
+        if (isVisible(document.querySelector(".verification-code-wrapper"))) {
+            return "verification";
+        }
+
+        if (isVisible(byId(IDS.email))) {
+            return "email";
+        }
+
+        return "unknown";
+    };
+
+    const customizeForgotPassword = () => {
+        const emailInput = byId(IDS.email);
+        const codeInput = byId(IDS.code);
+        const newPassword = byId(IDS.newPassword);
+        const confirmPassword = byId(IDS.confirmPassword);
+        const sendCode = byId(IDS.sendCode);
+        const verifyCode = byId(IDS.verifyCode);
+        const resendCode = byId(IDS.resendCode);
+        const continueButton = byId(IDS.continue);
+        const cancelButton = byId(IDS.cancel);
+        const codeLabel = document.querySelector("label[for='" + IDS.code + "']");
+
+        setText(codeLabel, "Enter and Verify 6-digit code");
+        setText(verifyCode, "Verify");
+        setText(resendCode, "Resend code");
+        setText(cancelButton, "Back to Sign in");
+
+        buildResendRow();
+        syncPasswordToggles();
+        attachVerificationBoxes();
+
+        const stage = detectResetStage();
+
+        hideButton(sendCode);
+        hideButton(verifyCode);
+        hideButton(continueButton);
+        hideButton(resendCode);
+
+        if (stage === "email") {
+            showButton(sendCode);
+            setPrimaryState(sendCode, hasValue(emailInput));
+        } else if (stage === "verification") {
+            showButton(verifyCode);
+            setPrimaryState(verifyCode, /^\d{6}$/.test(codeInput ? codeInput.value.trim() : ""));
+            showButton(resendCode, "inline-flex");
+            setDisabled(resendCode, false);
+        } else if (stage === "changeEmail") {
+            showButton(continueButton);
+            setPrimaryState(continueButton, true);
+        } else if (stage === "password") {
+            showButton(continueButton);
+            setPrimaryState(continueButton, hasValue(newPassword) && hasValue(confirmPassword));
+        }
+
+        setResendRowVisible(stage === "verification");
+    };
+
+    /* -------------------------------------------------------------- runtime */
+
+    const PAGES = {
+        signIn: customizeSignIn,
+        signUp: customizeSignUp,
+        forgotPassword: customizeForgotPassword
+    };
+
+    let running = false;
+    let scheduled = false;
+
+    const runPass = () => {
+        if (running) {
+            return;
+        }
+
+        running = true;
+
+        try {
+            const page = document.body && document.body.dataset.page;
+            const customize = PAGES[page];
+
+            if (customize) {
+                customize();
+            }
+
+            attachBusyOnSubmit();
+            syncPageLevelError();
+            clearBusyOnError();
+        } catch (error) {
+            // One bad pass must not tear down the observer that drives the rest
+            // of the journey.
+            if (window.console && window.console.error) {
+                window.console.error("[stack-b2c-ui]", error);
+            }
+        } finally {
+            running = false;
+        }
+    };
+
+    const schedule = () => {
+        if (scheduled) {
+            return;
+        }
+
+        scheduled = true;
+
+        const run = () => {
+            scheduled = false;
+            runPass();
+        };
+
+        if (window.requestAnimationFrame) {
+            window.requestAnimationFrame(run);
+        } else {
+            window.setTimeout(run, 16);
+        }
+    };
+
+    const start = () => {
+        runPass();
+
+        // Replaces the old fixed 10ms/200ms retries, which missed the form
+        // whenever B2C took longer than that to inject it.
+        new MutationObserver(schedule).observe(document.documentElement, {
+            childList: true,
+            subtree: true,
+            attributes: true,
+            attributeFilter: ["style", "class", "aria-hidden"]
+        });
+
+        document.addEventListener("input", schedule, true);
+        document.addEventListener("click", schedule, true);
+    };
+
+    if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", start);
+    } else {
+        start();
+    }
+})();
