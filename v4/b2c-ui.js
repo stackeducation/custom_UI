@@ -494,14 +494,9 @@
         attachVerificationBoxes();
         syncVerificationCodeLabel();
 
-        /*
-         * Unlike the reset journey, sign-up has no stage machine to hide the
-         * boxes, and B2C may only toggle the code input itself rather than an
-         * ancestor - which would leave six empty boxes on the email step. The
-         * verify button is B2C's own "awaiting a code" signal and we never
-         * write to its display here, so it is safe to read back.
-         */
-        setVerificationBoxesVisible(isSelfDisplayed(verifyCode));
+        // The boxes stand in for the real code input, so they follow it exactly
+        // - same signal the reset journey uses.
+        setVerificationBoxesVisible(isVisible(codeInput));
 
         setPrimaryState(sendCode, hasValue(emailInput));
         setPrimaryState(verifyCode, isCompleteCode(codeInput));
@@ -518,28 +513,17 @@
      * The reset journey is four screens rendered from one form. Stage is read
      * from what B2C currently shows, in this precedence order.
      */
-    const detectResetStage = () => {
-        const newPassword = byId(IDS.newPassword);
-        const confirmPassword = byId(IDS.confirmPassword);
-
-        if (isVisible(newPassword) && isVisible(confirmPassword)) {
-            return "password";
-        }
-
-        if (isVisible(byId(IDS.changeClaims))) {
-            return "changeEmail";
-        }
-
-        if (isVisible(document.querySelector(".verification-code-wrapper"))) {
-            return "verification";
-        }
-
-        if (isVisible(byId(IDS.email))) {
-            return "email";
-        }
-
-        return "unknown";
-    };
+    /*
+     * Which step B2C is on, read only from elements B2C itself owns - never
+     * from anything this script injects. Our 6-box wrapper is a sibling of the
+     * real code input, so it stays visible when B2C hides just the input, which
+     * would report the code step while the user is still typing their email.
+     */
+    const readResetStep = () => ({
+        code: isVisible(byId(IDS.code)),
+        changeClaims: isVisible(byId(IDS.changeClaims)),
+        password: isVisible(byId(IDS.newPassword)) && isVisible(byId(IDS.confirmPassword))
+    });
 
     const customizeForgotPassword = () => {
         const emailInput = byId(IDS.email);
@@ -561,30 +545,42 @@
         attachVerificationBoxes();
         syncVerificationCodeLabel();
 
-        const stage = detectResetStage();
+        const step = readResetStep();
 
-        hideButton(sendCode);
-        hideButton(verifyCode);
-        hideButton(continueButton);
-        hideButton(resendCode);
+        // Per-button rules, matching v3-fp exactly rather than collapsing them
+        // into one mutually exclusive stage - the two can disagree in the
+        // in-between states B2C briefly renders.
 
-        if (stage === "email") {
+        if (step.code || step.changeClaims) {
+            hideButton(sendCode);
+        } else {
             showButton(sendCode);
             setPrimaryState(sendCode, hasValue(emailInput));
-        } else if (stage === "verification") {
-            showButton(verifyCode);
-            setPrimaryState(verifyCode, isCompleteCode(codeInput));
-            showButton(resendCode, "inline-flex");
-            setDisabled(resendCode, false);
-        } else if (stage === "changeEmail") {
-            showButton(continueButton);
-            setPrimaryState(continueButton, true);
-        } else if (stage === "password") {
-            showButton(continueButton);
-            setPrimaryState(continueButton, hasValue(newPassword) && hasValue(confirmPassword));
         }
 
-        setResendRowVisible(stage === "verification");
+        if (step.code) {
+            showButton(verifyCode);
+            setPrimaryState(verifyCode, isCompleteCode(codeInput));
+        } else {
+            hideButton(verifyCode);
+        }
+
+        if (step.password) {
+            showButton(continueButton);
+            setPrimaryState(continueButton, hasValue(newPassword) && hasValue(confirmPassword));
+        } else if (step.changeClaims) {
+            showButton(continueButton);
+            setPrimaryState(continueButton, true);
+        } else {
+            hideButton(continueButton);
+        }
+
+        // The boxes stand in for the real input, so they follow it exactly.
+        setVerificationBoxesVisible(step.code);
+
+        // Resend is left entirely to B2C - writing to its display would clobber
+        // the signal the row's visibility is read from.
+        setResendRowVisible(isSelfDisplayed(resendCode));
     };
 
     /* -------------------------------------------------------------- runtime */
