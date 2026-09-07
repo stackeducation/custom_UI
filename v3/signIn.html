@@ -7,7 +7,6 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap"  rel="stylesheet" />
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.5/dist/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
     <title>Sign In</title>
 
     <script>
@@ -91,8 +90,8 @@
             --input-border: #333333;
             --input-focus-border: #5899D6;
 
-            --button-disabled: #E1DFD9;
-            --button-disabled-text: #a3a3a3;
+            --button-disabled: #2C2C2C;
+            --button-disabled-text: #8A8A8A;
 
             --error-text: #ff8a8a;
             --shadow-color: rgba(245, 166, 49, 0.16);
@@ -324,6 +323,7 @@
             padding: 0 12px;
             color: var(--text-primary);
             background: var(--input-bg);
+            font-family: inherit;
             font-size: 16px;
         }
 
@@ -369,9 +369,15 @@
             cursor: pointer;
         }
 
-        .password-toggle svg {
+        .password-toggle img {
             width: 16px;
             height: 16px;
+        }
+
+        #attributeList ul li input:focus,
+        .entry-item input:focus {
+            border-color: var(--input-focus-border);
+            box-shadow: 0 0 0 1px var(--input-focus-border);
         }
 
         #attributeList ul li input::placeholder,
@@ -400,6 +406,10 @@
             width: max-content;
         }
 
+        #forgotPassword:hover {
+            text-decoration: underline;
+        }
+
         .buttons {
             display: flex;
             flex-direction: column;
@@ -418,6 +428,7 @@
         .buttons button {
             width: 100%;
             height: 48px;
+            font-family: inherit;
             border-radius: 6px;
             border: none;
             outline: none;
