@@ -369,9 +369,15 @@
             cursor: pointer;
         }
 
-        .password-toggle svg {
+        .password-toggle img {
             width: 16px;
             height: 16px;
+        }
+
+        #attributeList ul li input:focus,
+        .entry-item input:focus {
+            border-color: var(--input-focus-border);
+            box-shadow: 0 0 0 1px var(--input-focus-border);
         }
 
         #attributeList ul li input::placeholder,
@@ -398,6 +404,10 @@
             font-weight: 500;
             text-decoration: none;
             width: max-content;
+        }
+
+        #forgotPassword:hover {
+            text-decoration: underline;
         }
 
         .buttons {
