@@ -528,6 +528,32 @@
     let running = false;
     let scheduled = false;
 
+    /*
+     * Which page this is. B2C rewrites the document it serves, so <body> may
+     * reach the browser without our data-page attribute; the same marker is
+     * therefore repeated on .card, inside markup B2C demonstrably preserves.
+     * Whichever survives is written back onto <body> so the page-scoped CSS
+     * (body[data-page="..."]) keeps working either way.
+     */
+    const resolvePage = () => {
+        const body = document.body;
+
+        if (!body) {
+            return null;
+        }
+
+        const marker = document.querySelector("[data-page]");
+        const page = body.dataset.page || (marker && marker.dataset.page) || null;
+
+        if (page && body.dataset.page !== page) {
+            body.dataset.page = page;
+        }
+
+        return page;
+    };
+
+    let warnedNoPage = false;
+
     const runPass = () => {
         if (running) {
             return;
@@ -536,11 +562,18 @@
         running = true;
 
         try {
-            const page = document.body && document.body.dataset.page;
+            const page = resolvePage();
             const customize = PAGES[page];
 
             if (customize) {
                 customize();
+            } else if (!warnedNoPage) {
+                warnedNoPage = true;
+                if (window.console && window.console.warn) {
+                    window.console.warn(
+                        "[stack-b2c-ui] no data-page marker found; page customisation skipped"
+                    );
+                }
             }
 
             syncPageLevelError();
