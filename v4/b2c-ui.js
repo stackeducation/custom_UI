@@ -66,12 +66,6 @@
         }
     };
 
-    const removeAttr = (node, name) => {
-        if (node && node.hasAttribute(name)) {
-            node.removeAttribute(name);
-        }
-    };
-
     const setDisabled = (node, value) => {
         if (node && node.disabled !== value) {
             node.disabled = value;
@@ -384,44 +378,6 @@
         setAttr(errorBox, "aria-hidden", hasMessage ? "false" : "true");
     };
 
-    /* ---------------------------------------------------------- busy state */
-
-    const BUSY_BUTTON_IDS = [IDS.next, IDS.continue, IDS.sendCode, IDS.verifyCode];
-
-    const attachBusyOnSubmit = () => {
-        BUSY_BUTTON_IDS.forEach((id) => {
-            const button = byId(id);
-
-            if (!button || button.dataset.busyAttached === "true") {
-                return;
-            }
-
-            button.dataset.busyAttached = "true";
-
-            button.addEventListener("click", () => {
-                if (button.disabled) {
-                    return;
-                }
-
-                setAttr(button, "aria-busy", "true");
-            });
-        });
-    };
-
-    // B2C answers a failed submit by rendering an error rather than navigating,
-    // so clear the spinner as soon as one appears - otherwise it spins forever.
-    const clearBusyOnError = () => {
-        const errored = Array.from(document.querySelectorAll("#api .error")).some(isVisible);
-
-        if (!errored) {
-            return;
-        }
-
-        Array.from(document.querySelectorAll("[aria-busy='true']")).forEach((node) => {
-            removeAttr(node, "aria-busy");
-        });
-    };
-
     /* ----------------------------------------------------------- sign in UI */
 
     const customizeSignIn = () => {
@@ -455,25 +411,6 @@
 
     /* ----------------------------------------------------------- sign up UI */
 
-    const setSignUpPasswordSectionVisible = (visible) => {
-        const newPassword = byId(IDS.newPassword);
-        const confirmPassword = byId(IDS.confirmPassword);
-        const signUpButton = byId(IDS.continue);
-
-        [
-            newPassword && newPassword.closest("li"),
-            confirmPassword && confirmPassword.closest("li"),
-            signUpButton
-        ].forEach((node) => {
-            if (!node) {
-                return;
-            }
-
-            setStyle(node, "display", visible ? "block" : "none");
-            setAttr(node, "aria-hidden", visible ? "false" : "true");
-        });
-    };
-
     const customizeSignUp = () => {
         const emailInput = byId(IDS.email);
         const codeInput = byId(IDS.code);
@@ -482,7 +419,6 @@
         const sendCode = byId(IDS.sendCode);
         const verifyCode = byId(IDS.verifyCode);
         const resendCode = byId(IDS.resendCode);
-        const changeClaims = byId(IDS.changeClaims);
         const signUpButton = byId(IDS.continue);
 
         setText(signUpButton, "Sign Up");
@@ -502,8 +438,6 @@
         setPrimaryState(verifyCode, isCompleteCode(codeInput));
         setPrimaryState(signUpButton, hasValue(newPassword) && hasValue(confirmPassword));
 
-        // The change-claims button is B2C's own "email verified" tell.
-        setSignUpPasswordSectionVisible(isVisible(changeClaims));
         setResendRowVisible(isSelfDisplayed(resendCode));
     };
 
@@ -609,9 +543,7 @@
                 customize();
             }
 
-            attachBusyOnSubmit();
             syncPageLevelError();
-            clearBusyOnError();
         } catch (error) {
             // One bad pass must not tear down the observer that drives the rest
             // of the journey.
