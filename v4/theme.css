@@ -217,8 +217,7 @@ body {
 
 /*
  * B2C's own headings/links, plus its busy indicators - those assume Bootstrap
- * is loaded and render unstyled here. The in-flight state is provided instead
- * by .buttons button[aria-busy="true"] below.
+ * is loaded and render unstyled here.
  */
 .intro,
 .heading,
@@ -411,32 +410,6 @@ body {
     cursor: pointer;
 }
 
-@keyframes stack-button-spin {
-    to {
-        transform: rotate(360deg);
-    }
-}
-
-/* In-flight state, applied by b2c-ui.js on submit to prevent double posts. */
-.buttons button[aria-busy="true"] {
-    color: transparent !important;
-    pointer-events: none;
-}
-
-.buttons button[aria-busy="true"]::after {
-    content: "";
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 18px;
-    height: 18px;
-    margin: -9px 0 0 -9px;
-    border: 2px solid var(--primary-button-text);
-    border-top-color: transparent;
-    border-radius: 50%;
-    animation: stack-button-spin 0.6s linear infinite;
-}
-
 /* -------------------------------------------------------------- resend row */
 
 .resend-row {
@@ -525,6 +498,14 @@ body {
 }
 
 /* ----------------------------------------------------------- page: sign in */
+
+/*
+ * Field-level errors stay hidden on sign-in, as in v3-fp. The button is gated
+ * on both fields being non-empty, and credential errors arrive as .pageLevel.
+ */
+body[data-page="signIn"] .entry .entry-item .error {
+    display: none !important;
+}
 
 body[data-page="signIn"] .entry {
     gap: 16px;
@@ -650,9 +631,5 @@ body[data-page="forgotPassword"] .buttons #cancel::before {
 @media (prefers-reduced-motion: reduce) {
     .card {
         animation: none;
-    }
-
-    .buttons button[aria-busy="true"]::after {
-        animation-duration: 2s;
     }
 }
