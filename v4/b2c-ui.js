@@ -20,6 +20,17 @@
     const EYE_OPEN = ASSET_BASE + "eye-open-icon.svg";
     const EYE_CLOSED = ASSET_BASE + "eye-closed-icon.svg";
 
+    /*
+     * Which page this is, taken from this script's own ?page= parameter.
+     * B2C serves <body> without our data-page attribute, so the URL is the one
+     * carrier it cannot strip without failing to load the script at all.
+     */
+    const PAGE_FROM_SRC = (function () {
+        const query = self && self.src ? self.src.split("?")[1] : "";
+
+        return query ? new URLSearchParams(query).get("page") : null;
+    })();
+
     const IDS = {
         email: "email",
         password: "password",
@@ -529,11 +540,11 @@
     let scheduled = false;
 
     /*
-     * Which page this is. B2C rewrites the document it serves, so <body> may
-     * reach the browser without our data-page attribute; the same marker is
-     * therefore repeated on .card, inside markup B2C demonstrably preserves.
-     * Whichever survives is written back onto <body> so the page-scoped CSS
-     * (body[data-page="..."]) keeps working either way.
+     * B2C confirmed to strip data-page from <body>, so the script URL is the
+     * primary signal and the attributes are fallbacks (.card sits inside markup
+     * B2C does preserve). Whatever resolves is written back onto <body>, which
+     * is what the page-scoped CSS (body[data-page="..."]) selects on - without
+     * this, rules like hiding #cancel on sign-up never apply.
      */
     const resolvePage = () => {
         const body = document.body;
@@ -543,7 +554,11 @@
         }
 
         const marker = document.querySelector("[data-page]");
-        const page = body.dataset.page || (marker && marker.dataset.page) || null;
+        const page =
+            PAGE_FROM_SRC ||
+            body.dataset.page ||
+            (marker && marker.dataset.page) ||
+            null;
 
         if (page && body.dataset.page !== page) {
             body.dataset.page = page;
