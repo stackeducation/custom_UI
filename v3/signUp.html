@@ -587,6 +587,12 @@
                     box.maxLength = 1;
                     box.autocomplete = i === 0 ? "one-time-code" : "off";
                     box.className = "verification-code-box";
+                    /*
+                     * B2C walks the inputs inside #attributeList and looks each
+                     * one up by id; an id-less input makes that lookup return
+                     * null and its claim validation throws on .classList.
+                     */
+                    box.id = "stackVerificationDigit" + (i + 1);
                     box.setAttribute("aria-label", `Digit ${i + 1} of verification code`);
 
                     box.addEventListener("input", (event) => {
